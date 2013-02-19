@@ -142,7 +142,7 @@ class modAdvTargetEmailing extends DolibarrModules
 		// Example:
 		$this->tabs = array(
 			//	// To add a new tab identified by code tabname1
-				'emailing:+tabAdvenceTarget:AdvTgtTabs:targetingemailling@targetingemailling:/targetingemailling/advancetargeting/advancetargeting.php?id=__ID__'
+				'emailing:+tabAdvTgtTabsTarget:AdvTgtTabsTarget:advtargetemailing@advtargetemailing:$user->rights->mailing->creer:/advtargetemailing/advtargetemailing/advtargetemailing.php?id=__ID__'
 			//	// To add another new tab identified by code tabname2
 			//	'objecttype:+tabname2:Title2:langfile@mymodule:$user->rights->othermodule->read:/mymodule/mynewtab2.php?id=__ID__',
 			//	// To remove an existing tab identified by code tabname

@@ -28,13 +28,30 @@ Module888666Desc = Advance Targeting Emailling for mass emailing module
 #
 # Admin page
 #
-MyModuleSetup = Advance Targeting Emailling setup
+AdvTgtSetup = Advance Targeting Emailling setup
 Settings = Settings
-MyModuleSetupPage = Advance Targeting Emailling setup page
+AdvTgtSetupPage = There is no particular configuration. Go to Tools->Emailing for existing or new emailing, a new tabs "Advance targeting" is available
 
 #
 # About page
 #
 About = About
-MyModuleAbout = About Advance Targeting Emailling
-MyModuleAboutPage = Advance Targeting Emailling about page
+AdvTgtAbout = About Advance Targeting Emailling
+AdvTgtAboutPage = Advance Targeting Emailling about page
+
+#
+# Menu/Tabs
+#
+AdvTgtTabsTarget=Thirdparty Advance targeting
+
+#
+# Advance targeting string
+#
+AdvTgtTitle=Fill the input ro preselect the customer (or contact) destinaries
+AdvTgtSearchTextHelp=Use %% as magic caracters. For exemple to find all item like <b>jean, joe, jim</b>, you can input <b>j%%</b> 
+AdvTgtSearchIntHelp=Use interval to select int or float value
+AdvTgtMinVal=Minimum value
+AdvTgtMaxVal=Maximum value
+AdvTgtSearchDtHelp=Use interval to select date value
+AdvTgtStartDt=Start dt.
+AdvTgtEndDt=End dt.

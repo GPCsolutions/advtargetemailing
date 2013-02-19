@@ -28,13 +28,32 @@ Module888666Desc = Ciblage avancé Emailling pour le module E-mailling
 #
 # Page d'administration
 #
-MyModuleSetup = Configuration du module Ciblage avancé Emailling
+AdvTgtSetup = Configuration du module Ciblage avancé Emailling
 Settings = Réglages
-MyModuleSetupPage = Page de réglage de Ciblage avancé Emailling
+AdvTgtSetupPage = Il n'y a pas de configuration particuliére pour ce module. Aller dans Outils->Emailing, pour un nouvelle emaling, ou un existant un nouvelle onglet "Destinataire Avancé" est disponible
+
 
 #
 # Page À propos
 #
 About = À propos
-MyModuleAbout = À propos de Ciblage avancé Emailling
-MyModuleAboutPage = Page à propos de Ciblage avancé Emailling
+AdvTgtAbout = À propos de Ciblage avancé Emailling
+AdvTgtAboutPage = Page à propos de Ciblage avancé Emailling
+
+
+#
+# Menu/Tabs
+#
+AdvTgtTabsTarget=Societé Destinataire Avancé
+
+#
+# Advance targeting string
+#
+AdvTgtTitle=Remplisser les champs pour pouvoir préselectionné les destinataires
+AdvTgtSearchTextHelp=Utilez "%%" comme caratére magique pour remplacé n'importe lequel. <BR> Par exemple pour trouvez toute terme commencant par "j" vous devez écrire j%%
+AdvTgtSearchIntHelp=Utilisez un intervale pour selectionné un nombre
+AdvTgtMinVal=Valeur minimum
+AdvTgtMaxVal=Valeur maximum
+AdvTgtSearchDtHelp=Utilisez un intervale pour selectionné une date
+AdvTgtStartDt=Dt. début
+AdvTgtEndDt=Dt. fin

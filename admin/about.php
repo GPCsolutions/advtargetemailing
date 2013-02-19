@@ -30,20 +30,16 @@ if ( ! $res)
 
 // Libraries
 require_once DOL_DOCUMENT_ROOT . "/core/lib/admin.lib.php";
-require_once "../lib/mymodule.lib.php";
+require_once "../lib/advtargetemailing.lib.php";
 
-dol_include_once('/mymodule/lib/PHP Markdown 1.0.1o/markdown.php');
+dol_include_once('/advtargetemailing/lib/PHP_Markdown_1.0.1o/markdown.php');
 
-
-//require_once "../class/myclass.class.php";
 // Translations
-$langs->load("mymodule@mymodule");
+$langs->load("advtargetemailing@advtargetemailing");
 
 // Access control
 if ( ! $user->admin) accessforbidden();
 
-// Parameters
-$action = GETPOST('action', 'alpha');
 
 /*
  * Actions
@@ -52,7 +48,7 @@ $action = GETPOST('action', 'alpha');
 /*
  * View
  */
-$page_name = "MyModuleAbout";
+$page_name = "AdvTgtAbout";
 llxHeader('', $langs->trans($page_name));
 
 // Subheader
@@ -61,23 +57,23 @@ $linkback = '<a href="' . DOL_URL_ROOT . '/admin/modules.php">'
 print_fiche_titre($langs->trans($page_name), $linkback);
 
 // Configuration header
-$head = mymoduleadmin_prepare_head();
-dol_fiche_head($head, 'about', $langs->trans("Module10000Name"), 0,
-	"mymodule@mymodule");
+$head = advtargetemailingadmin_prepare_head();
+dol_fiche_head($head, 'about', $langs->trans("Module888666Name"), 0,
+	"advtargetemailing@advtargetemailing");
 
 // About page goes here
-echo $langs->trans("MyModuleAboutPage");
+echo $langs->trans("AdvTgtAboutPage");
 
 print '<br>';
 
-$buffer = file_get_contents(dol_buildpath('/mymodule/README.md',0));
+$buffer = file_get_contents(dol_buildpath('/advtargetemailing/README.md',0));
 print Markdown($buffer);
 
 print '<br>';
 
-print '<a href="'.dol_buildpath('/mymodule/COPYING',1).'">';
+print '<a href="'.dol_buildpath('/advtargetemailing/COPYING',1).'">';
 
-print '<img src="'.dol_buildpath('/mymodule/img/gplv3.png',1).'"/>';
+print '<img src="'.dol_buildpath('/advtargetemailing/img/gplv3.png',1).'"/>';
 
 print '</a>';
 

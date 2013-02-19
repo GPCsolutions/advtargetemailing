@@ -17,39 +17,31 @@
  */
 
 /**
- *	\file		lib/mymodule.lib.php
- *	\ingroup	mymodule
+ *	\file		lib/advtargetemailing.lib.php
+ *	\ingroup	advtargetemailing
  *	\brief		This file is an example module library
  *				Put some comments here
  */
 
-function mymoduleadmin_prepare_head()
+function advtargetemailingadmin_prepare_head()
 {
 	global $langs, $conf;
 	
-	$langs->load("mymodule@mymodule");
+	$langs->load("advtargetemailing@advtargetemailing");
 
 	$h = 0;
 	$head = array();
 
-	$head[$h][0] = dol_buildpath("/mymodule/admin/mymodule.php",1);
+	$head[$h][0] = dol_buildpath("/advtargetemailing/admin/admin_advtargetemailing.php",1);
 	$head[$h][1] = $langs->trans("Settings");
 	$head[$h][2] = 'settings';
 	$h++;
-	$head[$h][0] = dol_buildpath("/mymodule/admin/about.php",1);
+	$head[$h][0] = dol_buildpath("/advtargetemailing/admin/about.php",1);
 	$head[$h][1] = $langs->trans("About");
 	$head[$h][2] = 'about';
 	$h++;
 
-	// Show more tabs from modules
-	// Entries must be declared in modules descriptor with line
-	//$this->tabs = array(
-	//	'entity:+tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__'
-	//); // to add new tab
-	//$this->tabs = array(
-	//	'entity:-tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__'
-	//); // to remove a tab
-	complete_head_from_modules($conf,$langs,$object,$head,$h,'mymodule');
+	complete_head_from_modules($conf,$langs,$object,$head,$h,'advtargetemailing');
 
 	return $head;
 }
