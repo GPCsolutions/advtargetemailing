@@ -166,7 +166,7 @@ class modAdvTargetEmailing extends DolibarrModules
 		// 'categories_x'		to add a tab in category view
 		// (replace 'x' by type of category (0=product, 1=supplier, 2=customer, 3=member)
 		// Dictionnaries
-		if ( ! isset($conf->mymodule->enabled)) $conf->mymodule->enabled = 0;
+		if ( ! isset($conf->advtargetemailing->enabled)) $conf->advtargetemailing->enabled = 0;
 		$this->dictionnaries = array();
 		/* Example:
 		  // This is to avoid warnings

@@ -27,7 +27,7 @@ class mailing_advthirdparties extends MailingTargets
 	var $desc="Third parties";
 	var $require_admin=0;
 
-	var $require_module=array("societe");	// This module allows to select by categories must be also enabled if category module is not activated
+	var $require_module=array("none");	// This module should not be displayed as Selector in mailling
 	var $picto='company';
 	var $db;
 
