@@ -23,6 +23,11 @@
  *				Put some comments here
  */
 
+/**
+ *  Prepare head
+ *
+ *  @return array      		   	 Tabs array
+ */
 function advtargetemailingadmin_prepare_head()
 {
 	global $langs, $conf;

@@ -20,10 +20,10 @@
 
 # Module label 'ModuleXXXName'
 # (where XXX is value of numeric property 'numero' of module)
-Module888666Name = Ciblage avancé Emailling
+Module103117Name = Ciblage avancé Emailling
 # Module description 'ModuleXXXDesc'
 # (where XXX is value of numeric property 'numero' of module)
-Module888666Desc = Ciblage avancé Emailling pour les client pour le module E-mailling
+Module103117Desc = Ciblage avancé Emailling pour les client pour le module E-mailling
 
 #
 # Page d'administration
@@ -44,7 +44,7 @@ AdvTgtAboutPage = Page à propos de Ciblage avancé Emailling
 #
 # Menu/Tabs
 #
-AdvTgtTabsTarget=Societé Destinataire Avancé
+AdvTgtTabsTarget=Selection destinataire avancé
 
 #
 # Advance targeting string
@@ -57,3 +57,9 @@ AdvTgtMaxVal=Valeur maximum
 AdvTgtSearchDtHelp=Utilisez un intervale pour selectionné une date
 AdvTgtStartDt=Dt. début
 AdvTgtEndDt=Dt. fin
+AdvTgtSaveTemplate=Sauver ce filtre
+AdvTgtAddWithoutSave=Ajouter les contacts sans sauver le modéle de selection
+AdvTgtSaveTemplateAndAdd=Ajouter les email et sauver le modéle de selection
+AdvTgtTypeOfIncudeHelp=Ajouter uniquement les emails client et client+contact ou juste contact 
+AdvTgtTypeOfIncude=Type d'email cibles
+AdvTgtContactHelp=Effectif seulement si vous selectionné les contacts dans "Type d'email cibles"

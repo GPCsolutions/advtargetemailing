@@ -45,7 +45,7 @@ class modAdvTargetEmailing extends DolibarrModules
 		// Id for module (must be unique).
 		// Use a free id here
 		// (See in Home -> System information -> Dolibarr for list of used modules id).
-		$this->numero = 888666;
+		$this->numero = 103117;
 		// Key text used to identify module (for permissions, menus, etc...)
 		$this->rights_class = 'advtargetemailing';
 
@@ -166,7 +166,13 @@ class modAdvTargetEmailing extends DolibarrModules
 		// 'categories_x'		to add a tab in category view
 		// (replace 'x' by type of category (0=product, 1=supplier, 2=customer, 3=member)
 		// Dictionnaries
-		if ( ! isset($conf->advtargetemailing->enabled)) $conf->advtargetemailing->enabled = 0;
+		//Setup $conf environement Dolibarr variable
+		if (! isset($conf->advtargetemailing->enabled)) {
+			$conf->advtargetemailing = (object) array();
+			$conf->advtargetemailing->enabled=0; // This is to avoid warnings
+		}
+		
+		
 		$this->dictionnaries = array();
 		/* Example:
 		  // This is to avoid warnings
@@ -432,7 +438,7 @@ class modAdvTargetEmailing extends DolibarrModules
 	{
 		$sql = array();
 
-		//$result = $this->load_tables();
+		$result = $this->load_tables();
 
 		return $this->_init($sql, $options);
 	}

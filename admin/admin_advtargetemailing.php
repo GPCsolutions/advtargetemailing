@@ -56,7 +56,7 @@ print_fiche_titre($langs->trans($page_name), $linkback);
 
 // Configuration header
 $head = advtargetemailingadmin_prepare_head();
-dol_fiche_head($head, 'settings', $langs->trans("Module888666Name"), 0,
+dol_fiche_head($head, 'settings', $langs->trans("Module103117Name"), 0,
 	"advtargetemailing@advtargetemailing");
 
 // Setup page goes here

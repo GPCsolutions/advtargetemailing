@@ -12,7 +12,7 @@ See COPYING for more information.
 INSTALL
 -------
 
-To install this module,  Dolibarr (> v = 3.3) have to be already
+To install this module,  Dolibarr (> v = 3.4) have to be already
 installed and configured on your server. It should be fully operational.
 
 - In your  Dolibarr installation directory edit the file htdocs/conf/conf.php

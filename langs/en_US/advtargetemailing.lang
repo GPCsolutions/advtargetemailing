@@ -20,10 +20,10 @@
 
 # Module label 'ModuleXXXName'
 # (where XXX is value of numeric property 'numero' of module)
-Module888666Name = Advance Targeting Emailling
+Module103117Name = Advance Targeting Emailling
 # Module description 'ModuleXXXDesc'
 # (where XXX is value of numeric property 'numero' of module)
-Module888666Desc = Advance Customer Targeting Emailling for mass emailing module
+Module103117Desc = Advance Customer Targeting Emailling for mass emailing module
 
 #
 # Admin page
@@ -55,3 +55,9 @@ AdvTgtMaxVal=Maximum value
 AdvTgtSearchDtHelp=Use interval to select date value
 AdvTgtStartDt=Start dt.
 AdvTgtEndDt=End dt.
+AdvTgtSaveTemplate=Save template Only
+AdvTgtAddWithoutSave=Add contact without save the query template
+AdvTgtSaveTemplateAndAdd=Add contact and Save template
+AdvTgtTypeOfIncudeHelp=Target Email of thirdparty and email of contact of the thridparty, or just thridparty email or just contact email
+AdvTgtTypeOfIncude=Type of targeted email
+AdvTgtContactHelp=Use only if you target contact into "Type of targeted email"

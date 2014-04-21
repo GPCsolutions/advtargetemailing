@@ -16,6 +16,8 @@
  */
 
 include_once DOL_DOCUMENT_ROOT.'/core/modules/mailings/modules_mailings.php';
+include_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
+include_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
 
 
 /**
@@ -49,22 +51,82 @@ class mailing_advthirdparties extends MailingTargets
 	 *    This is the main function that returns the array of emails
 	 *
 	 *    @param	int		$mailing_id    	Id of mailing. No need to use it.
-	 *    @param	array	$socid  		Array if id soc to add
+	 *    @param	array	$socid  		Array of id soc to add
+	 *    @param	int		$type_of_target	define in advtargetemailing.class.php
+	 *    @param	array	$contactid 		Array of contact id to add
 	 *    @return   int 					<0 if error, number of emails added if ok
 	 */
-	function add_to_target($mailing_id,$socid)
+	function add_to_target($mailing_id,$socid,$type_of_target, $contactid)
 	{
 		global $conf, $langs;
 
+		dol_syslog(get_class($this)."::add_to_target socid=".var_export($socid,true).' contactid='.var_export($contactid,true));
+		
 		$cibles = array();
 
 		// Select the third parties from category
 		if (count($socid)>0)
 		{
-			$sql= "SELECT s.rowid as id, s.email as email, s.nom as name, null as fk_contact, se.prenom as firstname, se.email2, se.email3";
-			$sql.= " FROM ".MAIN_DB_PREFIX."societe as s INNER JOIN ".MAIN_DB_PREFIX."societe_extrafields se ON se.fk_object=s.rowid";
+			$sql= "SELECT s.rowid as id, s.email as email, s.nom as name, null as fk_contact";
+			$sql.= " FROM ".MAIN_DB_PREFIX."societe as s LEFT OUTER JOIN ".MAIN_DB_PREFIX."societe_extrafields se ON se.fk_object=s.rowid";
 			$sql.= " WHERE s.entity IN (".getEntity('societe', 1).")";
 			$sql.= " AND s.rowid IN (".implode(',',$socid).")";
+			$sql.= " ORDER BY email";
+		}
+		
+		
+		dol_syslog(get_class($this)."::add_to_target sql=".$sql, LOG_DEBUG);
+		// Stock recipients emails into targets table
+		$result=$this->db->query($sql);
+		if ($result)
+		{
+			$num = $this->db->num_rows($result);
+			$i = 0;
+
+			dol_syslog(get_class($this)."::add_to_target mailing ".$num." targets found", LOG_DEBUG);
+
+			$old = '';
+			while ($i < $num)
+			{
+				$obj = $this->db->fetch_object($result);
+				
+				if (!empty($obj->email) &&(($type_of_target==1) || ($type_of_target==3))) {
+					if (!array_key_exists($obj->email, $cibles)) {
+						$cibles[$obj->email] = array(
+							'email' => $obj->email,
+							'fk_contact' => $obj->fk_contact,
+							'name' => $obj->name,
+							'firstname' => $obj->firstname,
+							'other' => '',
+							'source_url' => $this->url($obj->id,'thirdparty'),
+							'source_id' => $obj->id,
+							'source_type' => 'thirdparty'
+					);
+					}
+				}
+				
+				$i++;
+			}
+		}
+		else
+		{
+			dol_syslog($this->db->error());
+			$this->error=$this->db->error();
+			return -1;
+		}
+		
+		// Select the third parties from category
+		if (count($socid)>0 || count($contactid)>0)
+		{
+			$sql= "SELECT socp.rowid as id, socp.email as email, socp.lastname as lastname, socp.firstname as firstname";
+			$sql.= " FROM ".MAIN_DB_PREFIX."socpeople as socp";
+			$sql.= " WHERE socp.entity IN (".getEntity('societe', 1).")";
+			if (count($contactid)>0) {
+				$sql.= " AND socp.rowid IN (".implode(',',$contactid).")";
+			} 
+			if (count($socid)>0) {
+				$sql.= " AND socp.fk_soc IN (".implode(',',$socid).")";
+			}
 			$sql.= " ORDER BY email";
 		}
 		
@@ -76,58 +138,29 @@ class mailing_advthirdparties extends MailingTargets
 		{
 			$num = $this->db->num_rows($result);
 			$i = 0;
-
+		
 			dol_syslog(get_class($this)."::add_to_target mailing ".$num." targets found");
-
+		
 			$old = '';
 			while ($i < $num)
 			{
 				$obj = $this->db->fetch_object($result);
-				
-				if (!empty($obj->email)) {
+		
+				if (!empty($obj->email)  && (($type_of_target==1) || ($type_of_target==2))) {
 					if (!array_key_exists($obj->email, $cibles)) {
 						$cibles[$obj->email] = array(
 							'email' => $obj->email,
-							'fk_contact' => $obj->fk_contact,
-							'name' => $obj->name,
+							'fk_contact' =>$obj->id,
+							'lastname' => $obj->lastname,
 							'firstname' => $obj->firstname,
 							'other' => '',
-							'source_url' => $this->url($obj->id),
+							'source_url' => $this->url($obj->id,'contact'),
 							'source_id' => $obj->id,
-							'source_type' => 'thirdparty'
-					);
-					}
-				}
-				
-				if (!empty($obj->email2)) {
-					if (!array_key_exists($obj->email2, $cibles)) {
-						$cibles[$obj->email2] = array(
-							'email' => $obj->email2,
-							'fk_contact' => $obj->fk_contact,
-							'name' => $obj->name,
-							'firstname' => $obj->firstname,
-							'other' => '',
-							'source_url' => $this->url($obj->id),
-							'source_id' => $obj->id,
-							'source_type' => 'thirdparty'
+							'source_type' => 'contact'
 						);
 					}
 				}
-				
-				if (!empty($obj->email3)) {
-					if (!array_key_exists($obj->email3, $cibles)) {
-						$cibles[$obj->email3] = array(
-							'email' => $obj->email3,
-							'fk_contact' => $obj->fk_contact,
-							'name' => $obj->name,
-							'firstname' => $obj->firstname,
-							'other' => '',
-							'source_url' => $this->url($obj->id),
-							'source_id' => $obj->id,
-							'source_type' => 'thirdparty'
-						);
-					}
-				}
+		
 				$i++;
 			}
 		}
@@ -139,7 +172,7 @@ class mailing_advthirdparties extends MailingTargets
 		}
 
 		
-		dol_syslog(get_class($this)."::add_to_target mailing cibles=".var_export($cibles,true));
+		dol_syslog(get_class($this)."::add_to_target mailing cibles=".var_export($cibles,true), LOG_DEBUG);
 		return parent::add_to_target($mailing_id, $cibles);
 	}
 
@@ -248,13 +281,17 @@ class mailing_advthirdparties extends MailingTargets
 	 *  @param	int		$id		ID
 	 *  @return string      	Url link
 	 */
-	function url($id)
+	function url($id,$type)
 	{
-		//$companystatic=new Societe($this->db);
-		//$companystatic->id=$id;
-		//$companystatic->nom='';
-		//return $companystatic->getNomUrl(1);	// Url too long
-		return '<a href="'.DOL_URL_ROOT.'/societe/soc.php?socid='.$id.'">'.img_object('',"company").'</a>';
+		if ($type=='thirdparty') {
+			$companystatic=new Societe($this->db);
+			$companystatic->fetch($id);
+			return $companystatic->getNomUrl(0);
+		} elseif ($type=='contact') {
+			$contactstatic=new Contact($this->db);
+			$contactstatic->fetch($id);
+			return $contactstatic->getNomUrl(0);
+		}
 	}
 
 }
