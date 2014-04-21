@@ -63,3 +63,6 @@ AdvTgtSaveTemplateAndAdd=Ajouter les email et sauver le modéle de selection
 AdvTgtTypeOfIncudeHelp=Ajouter uniquement les emails client et client+contact ou juste contact 
 AdvTgtTypeOfIncude=Type d'email cibles
 AdvTgtContactHelp=Effectif seulement si vous selectionné les contacts dans "Type d'email cibles"
+AddAll=Ajouter tout
+RemoveAll=Enlever tout
+ItemsCount=Elément(s)

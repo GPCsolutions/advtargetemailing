@@ -61,3 +61,6 @@ AdvTgtSaveTemplateAndAdd=Add contact and Save template
 AdvTgtTypeOfIncudeHelp=Target Email of thirdparty and email of contact of the thridparty, or just thridparty email or just contact email
 AdvTgtTypeOfIncude=Type of targeted email
 AdvTgtContactHelp=Use only if you target contact into "Type of targeted email"
+AddAll=Add all
+RemoveAll=Remove all
+ItemsCount=Item(s)

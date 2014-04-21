@@ -94,5 +94,53 @@ class FormAdvTargetEmailing extends Form {
 		return $out;
 	}
 	
+	
+	/**
+	 * Affiche un champs select contenant une liste
+	 *
+	 * @param int $selectid à preselectionner
+	 * @param string $htmlname select field
+	 * @param int $showempty empty field
+	 * @return string select field
+	 */
+	function multiselect_select($selected, $htmlname = 'cust_prospect_status', $showempty = 0) {
+	
+		global $conf, $langs;
+	
+		$out = '<select class="flat" name="'.$htmlname.'">';
+		if ($showempty) $out .= '<option value="">&nbsp;</option>';
+	
+		$sql = "SELECT code, label";
+		$sql.= " FROM ".MAIN_DB_PREFIX."c_prospectlevel";
+		$sql.= " WHERE active > 0";
+		$sql.= " ORDER BY sortorder";
+		dol_syslog(get_class($this).'::select_prospection_status sql='.$sql,LOG_DEBUG);
+		$resql = $this->db->query($sql);
+		if ($resql)
+		{
+			$num = $this->db->num_rows($resql);
+			$i = 0;
+			while ($i < $num)
+			{
+				$obj = $this->db->fetch_object($resql);
+	
+				$out .= '<option value="'.$obj->code.'"';
+				if ($selected == $obj->code) $out .= ' selected="selected"';
+				$out .= '>';
+				$level=$langs->trans($obj->code);
+				if ($level == $obj->code) $level=$langs->trans($obj->label);
+				$out .= $level;
+				$out .= '</option>';
+	
+				$i++;
+			}
+		}else {
+			dol_print_error($this->db);
+		}
+	
+		$out .= '</select>';
+	
+		return $out;
+	}
 
 }

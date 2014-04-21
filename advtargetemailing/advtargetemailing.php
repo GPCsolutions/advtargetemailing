@@ -83,6 +83,16 @@ if ($result<0) {
 /*
  * Action
 */
+
+if ($action=='addcontactandsave') {
+	$action='add';
+	$saveordelete='save';
+}
+if ($action=='addcontactanddelete') {
+	$action='add';
+	$saveordelete='delete';
+}
+
 if ($action=='add') {
 
 	$user_contact_query=false;
@@ -368,8 +378,46 @@ if ($_POST["button_removefilter"])
 /*
  * View
 */
+$extrajs = array (
+		'/agefodd/includes/multiselect/js/ui.multiselect.js'
+);
+$extracss = array (
+		'/agefodd/includes/multiselect/css/ui.multiselect.css','/agefodd/css/agefodd.css'
+);
 
-llxHeader('',$langs->trans("AdvTgtTabsTarget"));
+llxHeader('',$langs->trans("AdvTgtTabsTarget"), '', '', '', '', $extrajs, $extracss );
+
+print '<script type="text/javascript" language="javascript">
+	$(document).ready(function() {
+		$.extend($.ui.multiselect.locale, {
+			addAll:\'' . $langs->transnoentities ( "AddAll" ) . '\',
+			removeAll:\'' . $langs->transnoentities ( "RemoveAll" ) . '\',
+			itemsCount:\'' . $langs->transnoentities ( "ItemsCount" ) . '\'
+		});
+	
+		$(function(){
+				$("#receiver").addClass("multiselect").attr("multiple","multiple").attr("name","receiver[]");
+				$(".multiselect").multiselect({sortable: false, searchable: false});
+		});
+					
+		// Click Function
+		$(":button[name=addcontactandsave]").click(function() {
+				$(":hidden[name=action]").val("addcontactandsave");
+				$("#find_customer").submit();
+		});
+					
+		$(":button[name=addcontactanddelete]").click(function() {
+				$(":hidden[name=action]").val("addcontactanddelete");
+				$("#find_customer").submit();
+		});
+	
+		$(":button[name=savetemplate]").click(function() {
+				$(":hidden[name=action]").val("savetemplate");
+				$("#find_customer").submit();
+		});
+	});
+</script>';
+
 
 $form = new Form($db);
 $formadvtargetemaling = new FormAdvTargetEmailing($db);
@@ -381,22 +429,6 @@ if ($object->fetch($id) >= 0) {
 	$head = emailing_prepare_head($object);
 
 	dol_fiche_head($head, 'tabAdvTgtTabsTarget', $langs->trans("Mailing"), 0, 'email');
-
-	print '<script type="text/javascript">
-		  $(function () {
-	
-			// Click Function
-			$(":button[name=addcontact]").click(function() {
-					$(":hidden[name=action]").val("add");
-					$("#find_customer").submit();
-						});
-		
-			$(":button[name=savetemplate]").click(function() {
-					$(":hidden[name=action]").val("savetemplate");
-					$("#find_customer").submit();
-						});
-		});
-	</script>';
 	
 
 	print '<table class="border" width="100%">';
