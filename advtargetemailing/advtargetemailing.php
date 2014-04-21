@@ -190,10 +190,17 @@ if ($action=='add') {
 
 	//var_dump($array_query);
 	//exit;
-	
-	$result=$advTarget->savequery($user,$array_query);
-	if ($result<0) {
-		setEventMessage($advTarget->error, 'errors');
+	if ($saveordelete=='save') {
+		$result=$advTarget->savequery($user,$array_query);
+		if ($result<0) {
+			setEventMessage($advTarget->error, 'errors');
+		}
+	}
+	if ($saveordelete=='delete') {
+		$result=$advTarget->delete($user);
+		if ($result<0) {
+			setEventMessage($advTarget->error, 'errors');
+		}
 	}
 
 	$result=$advTarget->query_thirdparty($array_query);
@@ -515,6 +522,7 @@ if ($object->fetch($id) >= 0) {
 		
 		//Customer Country
 		print '<tr><td>'.$langs->trans("Country").'</td><td>'."\n";
+		
 		print $form->select_country($array_query['cust_country'],'cust_country');
 		print '</td><td>'."\n";
 		print '</td></tr>'."\n";
@@ -539,7 +547,7 @@ if ($object->fetch($id) >= 0) {
 		
 		//Prospection status
 		print '<tr><td>'.$langs->trans('ProspectLevel').'</td><td>';
-		print $formadvtargetemaling->select_prospection_status($array_query['cust_prospect_status'],'cust_prospect_status', 1);
+		print $formadvtargetemaling->multiselect_prospection_status($array_query['cust_prospect_status'],'cust_prospect_status', 1);
 		print '</td><td>'."\n";
 		print '</td></tr>'."\n";
 		
@@ -738,7 +746,8 @@ if ($object->fetch($id) >= 0) {
 		print '<tr>'."\n";
 		print '<td colspan="3" align="right">'."\n";
 		
-		print '<input type="button" name="addcontact" id="addcontact" value="'.$langs->trans('AdvTgtSaveTemplateAndAdd').'"/>'."\n";
+		print '<input type="button" name="addcontactandsave" id="addcontactandsave" value="'.$langs->trans('AdvTgtSaveTemplateAndAdd').'"/>'."\n";
+		print '<input type="button" name="addcontactanddelete" id="addcontactanddelete" value="'.$langs->trans('AdvTgtSaveTemplateAndDelete').'"/>'."\n";
 		print '<input type="button" name="savetemplate" id="savetemplate" value="'.$langs->trans('AdvTgtSaveTemplate').'"/>'."\n";
 
 		print '</td>'."\n";

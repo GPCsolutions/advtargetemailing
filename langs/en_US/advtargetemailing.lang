@@ -64,3 +64,4 @@ AdvTgtContactHelp=Use only if you target contact into "Type of targeted email"
 AddAll=Add all
 RemoveAll=Remove all
 ItemsCount=Item(s)
+AdvTgtSaveTemplateAndDelete=Add contact and delete template

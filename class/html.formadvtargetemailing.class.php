@@ -103,18 +103,16 @@ class FormAdvTargetEmailing extends Form {
 	 * @param int $showempty empty field
 	 * @return string select field
 	 */
-	function multiselect_select($selected, $htmlname = 'cust_prospect_status', $showempty = 0) {
+	function multiselect_prospection_status($selected_array, $htmlname = 'cust_prospect_status', $showempty = 0) {
 	
 		global $conf, $langs;
-	
-		$out = '<select class="flat" name="'.$htmlname.'">';
-		if ($showempty) $out .= '<option value="">&nbsp;</option>';
+		$options_array=array();
 	
 		$sql = "SELECT code, label";
 		$sql.= " FROM ".MAIN_DB_PREFIX."c_prospectlevel";
 		$sql.= " WHERE active > 0";
 		$sql.= " ORDER BY sortorder";
-		dol_syslog(get_class($this).'::select_prospection_status sql='.$sql,LOG_DEBUG);
+		dol_syslog(get_class($this).'::multiselect_prospection_status sql='.$sql,LOG_DEBUG);
 		$resql = $this->db->query($sql);
 		if ($resql)
 		{
@@ -124,23 +122,55 @@ class FormAdvTargetEmailing extends Form {
 			{
 				$obj = $this->db->fetch_object($resql);
 	
-				$out .= '<option value="'.$obj->code.'"';
-				if ($selected == $obj->code) $out .= ' selected="selected"';
-				$out .= '>';
 				$level=$langs->trans($obj->code);
 				if ($level == $obj->code) $level=$langs->trans($obj->label);
-				$out .= $level;
-				$out .= '</option>';
-	
+				$options_array[$obj->code]=$level;
+
 				$i++;
 			}
 		}else {
 			dol_print_error($this->db);
 		}
+		return $this->multiselect($htmlname,$options_array,$selected_array,$showempty);
+	}
 	
-		$out .= '</select>';
+	/**
+	 * Return multiselect list of entities.
+	 *
+	 * @param string $htmlname select
+	 * @param array $current to manage
+	 * @param string $option
+	 * @return void
+	 */
+	function multiselect($htmlname, $options_array=array(), $selected_array=array(),$showempty=1) {
 	
-		return $out;
+		global $conf, $langs;
+	
+		$return = '<select id="' . $htmlname . '" class="multiselect" multiple="multiple" name="' . $htmlname . '[]" style="display: none;">';
+		if ($showempty) $return .= '<option value="">&nbsp;</option>';
+		
+		//Find if keys is in selected array value
+		$intersect_array=array_intersect_key($options_array, array_flip($selected_array));
+		
+		if (count($options_array)>0) {
+			foreach($options_array as $keyoption=>$valoption){
+				//If key is in intersect table then it have to e selected
+				if (count($intersect_array)>0) {
+					if (array_key_exists($keyoption, $intersect_array)) {
+						$selected=' selected="selected" ';
+					} else {
+						$selected='';
+					}
+				}	
+				
+				
+				$return .='<option '.$selected.' value="'.$keyoption.'">'.$valoption.'</option>';
+			}
+		}
+		
+		$return .= '</select>';
+	
+		return $return;
 	}
 
 }

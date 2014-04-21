@@ -66,3 +66,4 @@ AdvTgtContactHelp=Effectif seulement si vous selectionné les contacts dans "Typ
 AddAll=Ajouter tout
 RemoveAll=Enlever tout
 ItemsCount=Elément(s)
+AdvTgtSaveTemplateAndDelete=Ajouter les email et supprimer le modéle de selection

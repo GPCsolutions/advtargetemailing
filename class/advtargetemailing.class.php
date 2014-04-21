@@ -490,7 +490,7 @@ class AdvanceTargetingMailing extends CommonObject
 				$sqlwhere[]= " (t.fk_stcomm=".$arrayquery['cust_comm_status'].")";
 			}
 			if (!empty($arrayquery['cust_prospect_status'])) {
-				$sqlwhere[]= " (t.fk_prospectlevel=".$arrayquery['cust_prospect_status'].")";
+				$sqlwhere[]= " (t.fk_prospectlevel IN (".implode(',',$arrayquery['cust_prospect_status'])."))";
 			}
 			if (!empty($arrayquery['cust_typeent'])) {
 				$sqlwhere[]= " (t.fk_typent=".$arrayquery['cust_typeent'].")";
