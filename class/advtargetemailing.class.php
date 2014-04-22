@@ -480,17 +480,17 @@ class AdvanceTargetingMailing extends CommonObject
 			if (!empty($arrayquery['cust_city'])) {
 				$sqlwhere[]= " (t.ville LIKE '".$arrayquery['cust_city']."')";
 			}
-			if (!empty($arrayquery['cust_status'])) {
-				$sqlwhere[]= " (t.status=".$arrayquery['cust_status'].")";
+			if (!empty($arrayquery['cust_status']) && count($arrayquery['cust_status'])>0) {
+				$sqlwhere[]= " (t.status IN (".implode(',',$arrayquery['cust_status'])."))";
 			}
-			if ($arrayquery['cust_typecust']!=-1) {
-				$sqlwhere[]= " (t.client=".$arrayquery['cust_typecust'].")";
+			if (!empty($arrayquery['cust_typecust']) && count($arrayquery['cust_typecust'])>0) {
+				$sqlwhere[]= " (t.client IN ".implode(',',$arrayquery['cust_typecust']).")";
 			}
 			if ($arrayquery['cust_comm_status']!='') {
 				$sqlwhere[]= " (t.fk_stcomm=".$arrayquery['cust_comm_status'].")";
 			}
-			if (!empty($arrayquery['cust_prospect_status'])) {
-				$sqlwhere[]= " (t.fk_prospectlevel IN (".implode(',',$arrayquery['cust_prospect_status'])."))";
+			if (!empty($arrayquery['cust_prospect_status']) && count($arrayquery['cust_prospect_status'])>0) {
+				$sqlwhere[]= " (t.fk_prospectlevel IN ('".implode("','",$arrayquery['cust_prospect_status'])."'))";
 			}
 			if (!empty($arrayquery['cust_typeent'])) {
 				$sqlwhere[]= " (t.fk_typent=".$arrayquery['cust_typeent'].")";
