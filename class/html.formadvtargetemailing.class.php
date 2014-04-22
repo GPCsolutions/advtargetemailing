@@ -85,7 +85,7 @@ class FormAdvTargetEmailing extends Form {
 	 * @param string $selected or Code or Label of preselected country
 	 * @return string HTML string with select
 	 */
-	function multiselect_country($htmlname = 'country_id', $selected_array = '') {
+	function multiselect_country($htmlname = 'country_id', $selected_array=array()) {
 		global $conf, $langs;
 		
 		$langs->load ( "dict" );
@@ -245,6 +245,55 @@ class FormAdvTargetEmailing extends Form {
 			}
 		}
 		
+		return $this->multiselectarray ( $htmlname, $options_array, $selected_array );
+	}
+	
+	/**
+	 *  Return combo list with people title
+	 *
+	 *  @param  string	$selected   Title preselected
+	 * 	@param	string	$htmlname	Name of HTML select combo field
+	 *  @return	void
+	 */
+	function multiselect_civility($htmlname='civilite_id',$selected_array = array())
+	{
+		global $conf,$langs,$user;
+		$langs->load("dict");
+		
+		$options_array=array();
+	
+	
+		$sql = "SELECT rowid, code, civilite, active FROM ".MAIN_DB_PREFIX."c_civilite";
+		$sql.= " WHERE active = 1";
+	
+		dol_syslog("Form::select_civility sql=".$sql);
+		$resql=$this->db->query($sql);
+		if ($resql)
+		{
+		
+			$num = $this->db->num_rows($resql);
+			$i = 0;
+			if ($num)
+			{
+				while ($i < $num)
+				{
+					$obj = $this->db->fetch_object($resql);
+					// Si traduction existe, on l'utilise, sinon on prend le libelle par defaut
+					$label= ($langs->trans("Civility".$obj->code)!="Civility".$obj->code ? $langs->trans("Civility".$obj->code) : ($obj->civilite!='-'?$obj->civilite:''));
+					
+					
+					$options_array[$obj->code]=$label;
+					
+					$i++;
+				}
+			}
+			
+		}
+		else
+		{
+			dol_print_error($this->db);
+		}
+	
 		return $this->multiselectarray ( $htmlname, $options_array, $selected_array );
 	}
 	

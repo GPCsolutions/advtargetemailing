@@ -605,14 +605,14 @@ class AdvanceTargetingMailing extends CommonObject
 			if (!empty($arrayquery['contact_firstname'])) {
 				$sqlwhere[]= " (t.firstname LIKE '".$arrayquery['contact_firstname']."')";
 			}
-			if (!empty($arrayquery['contact_country'])) {
+			if (!empty($arrayquery['contact_country']) && count($arrayquery['contact_country'])) {
 				$sqlwhere[]= " (t.fk_pays IN (".implode(',',$arrayquery['contact_country'])."))";
 			}
-			if ($arrayquery['contact_status']!='') {
-				$sqlwhere[]= " (t.statut=".$arrayquery['contact_status'].")";
+			if (!empty($arrayquery['contact_status']) && count($arrayquery['contact_status'])>0) {
+				$sqlwhere[]= " (t.statut IN (".implode(',',$arrayquery['contact_status'])."))";
 			}
-			if (!empty($arrayquery['contact_civility'])) {
-				$sqlwhere[]= " (t.civilite='".$arrayquery['contact_civility']."')";
+			if (!empty($arrayquery['contact_civility']) && count($arrayquery['contact_civility'])>0) {
+				$sqlwhere[]= " (t.civilite IN ('".implode("','",$arrayquery['contact_civility'])."'))";
 			}
 			if ($arrayquery['contact_no_email']!='') {
 				$sqlwhere[]= " (t.no_email='".$arrayquery['contact_no_email']."')";

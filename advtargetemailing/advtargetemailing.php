@@ -194,10 +194,15 @@ if ($action == 'add') {
 		}
 	}
 	
-	$result = $advTarget->query_thirdparty ( $array_query );
-	if ($result < 0) {
-		setEventMessage ( $advTarget->error, 'errors' );
+	if ($array_query ['type_of_target'] == 1 || $array_query ['type_of_target'] == 3) {
+		$result = $advTarget->query_thirdparty ( $array_query );
+		if ($result < 0) {
+			setEventMessage ( $advTarget->error, 'errors' );
+		}
+	} else {
+		$advTarget->thirdparty_lines = array ();
 	}
+	
 	if ($user_contact_query && ($array_query ['type_of_target'] == 1 || $array_query ['type_of_target'] == 2)) {
 		$result = $advTarget->query_contact ( $array_query );
 		if ($result < 0) {
@@ -620,10 +625,9 @@ if ($object->fetch ( $id ) >= 0) {
 		
 		// State Contact
 		print '<tr><td>' . $langs->trans ( 'Status' ) . ' ' . $langs->trans ( 'Contact' ) . '</td><td>';
-		print $form->selectarray ( 'contact_status', array (
-				'' => '',
+		print $formadvtargetemaling->multiselectarray ( 'contact_status', array (
 				'0' => $langs->trans ( 'ActivityCeased' ),
-				'1' => $langs->trans ( 'InActivity' ) 
+				'1' => $langs->trans ( 'InActivity' )
 		), $array_query ['contact_status'] );
 		print '</td><td>' . "\n";
 		print $form->textwithpicto ( '', $langs->trans ( "AdvTgtContactHelp" ), 1, 'help' );
@@ -631,7 +635,7 @@ if ($object->fetch ( $id ) >= 0) {
 		
 		// Civility
 		print '<tr><td width="15%">' . $langs->trans ( "UserTitle" ) . '</td><td>';
-		print $formcompany->select_civility ( $array_query ['contact_civility'], 'contact_civility' );
+		print $formadvtargetemaling->multiselect_civility ('contact_civility', $array_query ['contact_civility']);
 		print '</td></tr>';
 		
 		// contact name
@@ -713,6 +717,13 @@ if ($object->fetch ( $id ) >= 0) {
 							'1' => $langs->trans ( 'Yes' ),
 							'0' => $langs->trans ( 'No' ) 
 					), $array_query ['cnct_options_' . $key] );
+					print '</td><td>' . "\n";
+				} elseif (($extrafields->attribute_type [$key] == 'select')) {
+					print $formadvtargetemaling->multiselectarray('cnct_options_' .$key, $extrafields->attribute_param[$key]['options'],$array_query['cnct_options_' .$key]);
+					print '</td><td>' . "\n";
+				}
+				elseif (($extrafields->attribute_type [$key] == 'sellist')) {
+					print $formadvtargetemaling->multiselectarray_selllist('cnct_options_' .$key, $extrafields->attribute_param[$key]['options'],$array_query['cnct_options_' .$key]);
 					print '</td><td>' . "\n";
 				} else {
 					
