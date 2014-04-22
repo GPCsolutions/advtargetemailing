@@ -64,11 +64,10 @@ class AdvanceTargetingMailing extends CommonObject
 		
 		$this->db = $db;
 		
-		$this->select_target_type = array('1'=>$langs->trans('Contacts').'+'.$langs->trans('ThirdParty'), 
-			'2'=>$langs->trans('Contacts'),
+		$this->select_target_type = array('2'=>$langs->trans('Contacts'),'1'=>$langs->trans('Contacts').'+'.$langs->trans('ThirdParty'), 
 			'3'=>$langs->trans('ThirdParty'),
 			);
-		$this->type_statuscommprospect=array(''=>'',
+		$this->type_statuscommprospect=array(
 			-1=>$langs->trans("StatusProspect-1"),
 			0=>$langs->trans("StatusProspect0"),
 			1=>$langs->trans("StatusProspect1"),
@@ -480,29 +479,32 @@ class AdvanceTargetingMailing extends CommonObject
 			if (!empty($arrayquery['cust_city'])) {
 				$sqlwhere[]= " (t.ville LIKE '".$arrayquery['cust_city']."')";
 			}
+			if (!empty($arrayquery['cust_mothercompany'])) {
+				$sqlwhere[]= " (t.parent IN (SELECT rowid FROM " . MAIN_DB_PREFIX . "societe WHERE nom LIKE '".$arrayquery['cust_mothercompany']."'))";
+			}
 			if (!empty($arrayquery['cust_status']) && count($arrayquery['cust_status'])>0) {
 				$sqlwhere[]= " (t.status IN (".implode(',',$arrayquery['cust_status'])."))";
 			}
 			if (!empty($arrayquery['cust_typecust']) && count($arrayquery['cust_typecust'])>0) {
-				$sqlwhere[]= " (t.client IN ".implode(',',$arrayquery['cust_typecust']).")";
+				$sqlwhere[]= " (t.client IN (".implode(',',$arrayquery['cust_typecust'])."))";
 			}
-			if ($arrayquery['cust_comm_status']!='') {
-				$sqlwhere[]= " (t.fk_stcomm=".$arrayquery['cust_comm_status'].")";
+			if (!empty($arrayquery['cust_comm_status']) && count($arrayquery['cust_comm_status']>0)) {
+				$sqlwhere[]= " (t.fk_stcomm IN (".implode(',',$arrayquery['cust_comm_status'])."))";
 			}
 			if (!empty($arrayquery['cust_prospect_status']) && count($arrayquery['cust_prospect_status'])>0) {
 				$sqlwhere[]= " (t.fk_prospectlevel IN ('".implode("','",$arrayquery['cust_prospect_status'])."'))";
 			}
-			if (!empty($arrayquery['cust_typeent'])) {
-				$sqlwhere[]= " (t.fk_typent=".$arrayquery['cust_typeent'].")";
+			if (!empty($arrayquery['cust_typeent']) && count($arrayquery['cust_typeent'])>0) {
+				$sqlwhere[]= " (t.fk_typent IN (".implode(',',$arrayquery['cust_typeent'])."))";
 			}
-			if (!empty($arrayquery['cust_saleman'])) {
-				$sqlwhere[]= " (saleman.fk_user=".$arrayquery['cust_saleman'].")";
+			if (!empty($arrayquery['cust_saleman']) && count($arrayquery['cust_saleman'])>0) {
+				$sqlwhere[]= " (saleman.fk_user IN (".implode(',',$arrayquery['cust_saleman'])."))";
 			}
-			if (!empty($arrayquery['cust_country'])) {
-				$sqlwhere[]= " (t.fk_pays=".$arrayquery['cust_country'].")";
+			if (!empty($arrayquery['cust_country']) && count($arrayquery['cust_country'])>0) {
+				$sqlwhere[]= " (t.fk_pays IN (".implode(',',$arrayquery['cust_country'])."))";
 			}
-			if (!empty($arrayquery['cust_effectif_id'])) {
-				$sqlwhere[]= " (t.fk_effectif=".$arrayquery['cust_effectif_id'].")";
+			if (!empty($arrayquery['cust_effectif_id']) && count($arrayquery['cust_effectif_id'])>0) {
+				$sqlwhere[]= " (t.fk_effectif IN (".implode(',',$arrayquery['cust_effectif_id'])."))";
 			}
 			
 			
@@ -604,7 +606,7 @@ class AdvanceTargetingMailing extends CommonObject
 				$sqlwhere[]= " (t.firstname LIKE '".$arrayquery['contact_firstname']."')";
 			}
 			if (!empty($arrayquery['contact_country'])) {
-				$sqlwhere[]= " (t.fk_pays=".$arrayquery['contact_country'].")";
+				$sqlwhere[]= " (t.fk_pays IN (".implode(',',$arrayquery['contact_country'])."))";
 			}
 			if ($arrayquery['contact_status']!='') {
 				$sqlwhere[]= " (t.statut=".$arrayquery['contact_status'].")";

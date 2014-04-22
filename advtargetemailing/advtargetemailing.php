@@ -1,7 +1,21 @@
 <?php
-/*
- * Advance Targeting Emailling for mass emailing module Copyright (C) 2013 Florian Henry <florian.henry@open-concept.pro> This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+/* Copyright (C) 2014  Florian Henry   <florian.henry@open-concept.pro>
+*
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
 $res = @include ("../../main.inc.php"); // For root directory
 if (! $res)
 	$res = @include ("../../../main.inc.php"); // For "custom" directory
@@ -10,7 +24,6 @@ if (! $res)
 
 require_once DOL_DOCUMENT_ROOT . '/comm/mailing/class/mailing.class.php';
 require_once DOL_DOCUMENT_ROOT . '/core/lib/emailing.lib.php';
-
 dol_include_once ( '/advtargetemailing/class/advtargetemailing.class.php' );
 dol_include_once ( '/advtargetemailing/class/html.formadvtargetemailing.class.php' );
 dol_include_once ( '/advtargetemailing/core/modules/mailings/advthirdparties.modules.php' );
@@ -106,8 +119,6 @@ if ($action == 'add') {
 				$dtarr = explode ( '_', $key );
 				if (! array_key_exists ( 'options_' . $dtarr [1] . '_end_dt', $array_query )) {
 					$array_query ['options_' . $dtarr [1] . '_end_dt'] = dol_mktime ( 0, 0, 0, GETPOST ( 'options_' . $dtarr [1] . '_end_dtmonth', 'int' ), GETPOST ( 'options_' . $dtarr [1] . '_end_dtday', 'int' ), GETPOST ( 'options_' . $dtarr [1] . '_end_dtyear', 'int' ) );
-					// print $array_query['options_'.$dtarr[1].'_end_dt'];
-					// 01/02/1013=1361228400
 				}
 			} else {
 				$array_query [$key] = GETPOST ( $key );
@@ -128,8 +139,6 @@ if ($action == 'add') {
 				$dtarr = explode ( '_', $key );
 				if (! array_key_exists ( 'cnct_options_' . $dtarr [1] . '_end_dt', $array_query )) {
 					$array_query ['cnct_options_' . $dtarr [1] . '_end_dt'] = dol_mktime ( 0, 0, 0, GETPOST ( 'cnct_options_' . $dtarr [1] . '_end_dtmonth', 'int' ), GETPOST ( 'cnct_options_' . $dtarr [1] . '_end_dtday', 'int' ), GETPOST ( 'cnct_options_' . $dtarr [1] . '_end_dtyear', 'int' ) );
-					// print $array_query['cnct_options_'.$dtarr[1].'_end_dt'];
-					// 01/02/1013=1361228400
 				}
 			} else {
 				$array_query [$key] = GETPOST ( $key );
@@ -161,7 +170,7 @@ if ($action == 'add') {
 				}
 			}
 			
-			if ($array_query [$key] != '') {
+			if (!empty($array_query [$key])) {
 				$user_contact_query = true;
 			}
 		}
@@ -171,8 +180,7 @@ if ($action == 'add') {
 		}
 	}
 	
-	// var_dump($array_query);
-	// exit;
+	
 	if ($saveordelete == 'save') {
 		$result = $advTarget->savequery ( $user, $array_query );
 		if ($result < 0) {
@@ -190,7 +198,7 @@ if ($action == 'add') {
 	if ($result < 0) {
 		setEventMessage ( $advTarget->error, 'errors' );
 	}
-	if ($user_contact_query || $array_query ['type_of_target'] == 1 || $array_query ['type_of_target'] == 2) {
+	if ($user_contact_query && ($array_query ['type_of_target'] == 1 || $array_query ['type_of_target'] == 2)) {
 		$result = $advTarget->query_contact ( $array_query );
 		if ($result < 0) {
 			setEventMessage ( $advTarget->error, 'errors' );
@@ -474,8 +482,7 @@ if ($object->fetch ( $id ) >= 0) {
 		
 		// Customer Country
 		print '<tr><td>' . $langs->trans ( "Country" ) . '</td><td>' . "\n";
-		
-		print $form->select_country ( $array_query ['cust_country'], 'cust_country' );
+		print $formadvtargetemaling->multiselect_country ('cust_country',$array_query ['cust_country']);
 		print '</td><td>' . "\n";
 		print '</td></tr>' . "\n";
 		
@@ -488,23 +495,19 @@ if ($object->fetch ( $id ) >= 0) {
 		print '</td><td>' . "\n";
 		print '</td></tr>' . "\n";
 		
+		// Mother Company
+		print '<tr><td>' . $langs->trans ( "Maison mère" ) . '</td><td>' . "\n";
+		print '<input type="text" name="cust_mothercompany" value="' . $array_query ['cust_mothercompany'] . '"/>';
+		print '</td><td>' . "\n";
+		print $form->textwithpicto ( '', $langs->trans ( "AdvTgtSearchTextHelp" ), 1, 'help' );
+		print '</td></tr>' . "\n";
+		
 		// Prospect/Customer
 		$selected = $array_query ['cust_typecust'];
 		print '<tr><td>' . $langs->trans ( 'ProspectCustomer' ) . ' ' . $langs->trans ( 'ThirdParty' ) . '</td><td>';
 		
 		$options_array = array(2=>$langs->trans ( 'Prospect' ),3=>$langs->trans ( 'ProspectCustomer' ),1=>$langs->trans ( 'Customer' ),0=>$langs->trans ( 'NorProspectNorCustomer' ));
 		print $formadvtargetemaling->multiselectarray ( 'cust_typecust', $options_array, $array_query ['cust_typecust'] );
-		
-		
-		/*print '<select class="flat" name="cust_typecust"><option value=""' . ($selected == - 1 ? ' selected="selected"' : '') . '></option>';
-		if (empty ( $conf->global->SOCIETE_DISABLE_PROSPECTS ))
-			print '<option value="2"' . ($selected == 2 ? ' selected="selected"' : '') . '>' . $langs->trans ( 'Prospect' ) . '</option>';
-		if (empty ( $conf->global->SOCIETE_DISABLE_PROSPECTS ) && empty ( $conf->global->SOCIETE_DISABLE_CUSTOMERS ))
-			print '<option value="3"' . ($selected == 3 ? ' selected="selected"' : '') . '>' . $langs->trans ( 'ProspectCustomer' ) . '</option>';
-		if (empty ( $conf->global->SOCIETE_DISABLE_CUSTOMERS ))
-			print '<option value="1"' . ($selected == 1 ? ' selected="selected"' : '') . '>' . $langs->trans ( 'Customer' ) . '</option>';
-		print '<option value="0"' . ($selected == 0 ? ' selected="selected"' : '') . '>' . $langs->trans ( 'NorProspectNorCustomer' ) . '</option></select>';*/
-		
 		print '</td><td>' . "\n";
 		print '</td></tr>' . "\n";
 		
@@ -516,27 +519,29 @@ if ($object->fetch ( $id ) >= 0) {
 		
 		// Prospection comm status
 		print '<tr><td>' . $langs->trans ( 'StatusProsp' ) . '</td><td>';
-		print $form->selectarray ( 'cust_comm_status', $advTarget->type_statuscommprospect, $array_query ['cust_comm_status'] );
+		print $formadvtargetemaling->multiselectarray ( 'cust_comm_status', $advTarget->type_statuscommprospect, $array_query ['cust_comm_status'] );
 		print '</td><td>' . "\n";
 		print '</td></tr>' . "\n";
 		
 		// Customer Type
 		print '<tr><td>' . $langs->trans ( "ThirdPartyType" ) . '</td><td>' . "\n";
-		print $form->selectarray ( 'cust_typeent', $formcompany->typent_array ( 0 ), $array_query ['cust_typeent'] );
+		print $formadvtargetemaling->multiselectarray ( 'cust_typeent', $formcompany->typent_array ( 0, " AND id <> 0" ), $array_query ['cust_typeent'] );
 		print '</td><td>' . "\n";
 		print '</td></tr>' . "\n";
 		
 		// Staff number
 		print '<td>' . $langs->trans ( "Staff" ) . '</td><td>';
-		print $form->selectarray ( "cust_effectif_id", $formcompany->effectif_array ( 0 ), $array_query ['cust_effectif_id'] );
+		print $formadvtargetemaling->multiselectarray ( "cust_effectif_id", $formcompany->effectif_array ( 0, " AND id <> 0" ), $array_query ['cust_effectif_id'] );
 		print '</td><td>' . "\n";
 		print '</td></tr>' . "\n";
 		
 		// Sales manager
 		print '<tr><td>' . $langs->trans ( "SalesRepresentatives" ) . '</td><td>' . "\n";
-		print $formother->select_salesrepresentatives ( $array_query ['cust_sale'], 'cust_saleman', $user );
+		print $formadvtargetemaling->multiselectselect_salesrepresentatives ('cust_saleman', $array_query ['cust_sale'] , $user );
 		print '</td><td>' . "\n";
 		print '</td></tr>' . "\n";
+		
+		
 		
 		// Standard Extrafield feature
 		if (empty ( $conf->global->MAIN_EXTRAFIELDS_DISABLED )) {
@@ -572,7 +577,15 @@ if ($object->fetch ( $id ) >= 0) {
 							'0' => $langs->trans ( 'No' ) 
 					), $array_query ['options_' . $key] );
 					print '</td><td>' . "\n";
-				} else {
+				}elseif (($extrafields->attribute_type [$key] == 'select')) {
+					print $formadvtargetemaling->multiselectarray('options_' .$key, $extrafields->attribute_param[$key]['options'],$array_query['options_' .$key]);
+					print '</td><td>' . "\n";
+				}
+				elseif (($extrafields->attribute_type [$key] == 'sellist')) {
+					print $formadvtargetemaling->multiselectarray_selllist('options_' .$key, $extrafields->attribute_param[$key]['options'],$array_query['options_' .$key]);
+					print '</td><td>' . "\n";
+				} 
+				else {
 					
 					print '<table class="nobordernopadding"><tr>';
 					print '<td></td><td>';
@@ -631,7 +644,7 @@ if ($object->fetch ( $id ) >= 0) {
 		
 		// Contact Country
 		print '<tr><td>' . $langs->trans ( 'Contact' ) . ' ' . $langs->trans ( "Country" ) . '</td><td>' . "\n";
-		print $form->select_country ( $array_query ['contact_country'], 'contact_country' );
+		print $formadvtargetemaling->multiselect_country ('contact_country',$array_query ['contact_country']);
 		print '</td><td>' . "\n";
 		print '</td></tr>' . "\n";
 		

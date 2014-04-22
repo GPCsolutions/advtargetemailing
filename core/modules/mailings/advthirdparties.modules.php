@@ -64,111 +64,115 @@ class mailing_advthirdparties extends MailingTargets
 		
 		$cibles = array();
 
-		// Select the third parties from category
-		if (count($socid)>0)
-		{
-			$sql= "SELECT s.rowid as id, s.email as email, s.nom as name, null as fk_contact";
-			$sql.= " FROM ".MAIN_DB_PREFIX."societe as s LEFT OUTER JOIN ".MAIN_DB_PREFIX."societe_extrafields se ON se.fk_object=s.rowid";
-			$sql.= " WHERE s.entity IN (".getEntity('societe', 1).")";
-			$sql.= " AND s.rowid IN (".implode(',',$socid).")";
-			$sql.= " ORDER BY email";
-		}
-		
-		
-		dol_syslog(get_class($this)."::add_to_target sql=".$sql, LOG_DEBUG);
-		// Stock recipients emails into targets table
-		$result=$this->db->query($sql);
-		if ($result)
-		{
-			$num = $this->db->num_rows($result);
-			$i = 0;
-
-			dol_syslog(get_class($this)."::add_to_target mailing ".$num." targets found", LOG_DEBUG);
-
-			$old = '';
-			while ($i < $num)
+		if (($type_of_target==1) || ($type_of_target==3)) {
+			// Select the third parties from category
+			if (count($socid)>0)
 			{
-				$obj = $this->db->fetch_object($result);
-				
-				if (!empty($obj->email) &&(($type_of_target==1) || ($type_of_target==3))) {
-					if (!array_key_exists($obj->email, $cibles)) {
-						$cibles[$obj->email] = array(
-							'email' => $obj->email,
-							'fk_contact' => $obj->fk_contact,
-							'name' => $obj->name,
-							'firstname' => $obj->firstname,
-							'other' => '',
-							'source_url' => $this->url($obj->id,'thirdparty'),
-							'source_id' => $obj->id,
-							'source_type' => 'thirdparty'
-					);
-					}
-				}
-				
-				$i++;
+				$sql= "SELECT s.rowid as id, s.email as email, s.nom as name, null as fk_contact";
+				$sql.= " FROM ".MAIN_DB_PREFIX."societe as s LEFT OUTER JOIN ".MAIN_DB_PREFIX."societe_extrafields se ON se.fk_object=s.rowid";
+				$sql.= " WHERE s.entity IN (".getEntity('societe', 1).")";
+				$sql.= " AND s.rowid IN (".implode(',',$socid).")";
+				$sql.= " ORDER BY email";
 			}
-		}
-		else
-		{
-			dol_syslog($this->db->error());
-			$this->error=$this->db->error();
-			return -1;
-		}
-		
-		// Select the third parties from category
-		if (count($socid)>0 || count($contactid)>0)
-		{
-			$sql= "SELECT socp.rowid as id, socp.email as email, socp.lastname as lastname, socp.firstname as firstname";
-			$sql.= " FROM ".MAIN_DB_PREFIX."socpeople as socp";
-			$sql.= " WHERE socp.entity IN (".getEntity('societe', 1).")";
-			if (count($contactid)>0) {
-				$sql.= " AND socp.rowid IN (".implode(',',$contactid).")";
-			} 
-			if (count($socid)>0) {
-				$sql.= " AND socp.fk_soc IN (".implode(',',$socid).")";
-			}
-			$sql.= " ORDER BY email";
-		}
-		
-		
-		dol_syslog(get_class($this)."::add_to_target sql=".$sql);
-		// Stock recipients emails into targets table
-		$result=$this->db->query($sql);
-		if ($result)
-		{
-			$num = $this->db->num_rows($result);
-			$i = 0;
-		
-			dol_syslog(get_class($this)."::add_to_target mailing ".$num." targets found");
-		
-			$old = '';
-			while ($i < $num)
+			
+			
+			dol_syslog(get_class($this)."::add_to_target societe sql=".$sql, LOG_DEBUG);
+			// Stock recipients emails into targets table
+			$result=$this->db->query($sql);
+			if ($result)
 			{
-				$obj = $this->db->fetch_object($result);
-		
-				if (!empty($obj->email)  && (($type_of_target==1) || ($type_of_target==2))) {
-					if (!array_key_exists($obj->email, $cibles)) {
-						$cibles[$obj->email] = array(
-							'email' => $obj->email,
-							'fk_contact' =>$obj->id,
-							'lastname' => $obj->lastname,
-							'firstname' => $obj->firstname,
-							'other' => '',
-							'source_url' => $this->url($obj->id,'contact'),
-							'source_id' => $obj->id,
-							'source_type' => 'contact'
+				$num = $this->db->num_rows($result);
+				$i = 0;
+	
+				dol_syslog(get_class($this)."::add_to_target mailing ".$num." targets found", LOG_DEBUG);
+	
+				$old = '';
+				while ($i < $num)
+				{
+					$obj = $this->db->fetch_object($result);
+					
+					if (!empty($obj->email)) {
+						if (!array_key_exists($obj->email, $cibles)) {
+							$cibles[$obj->email] = array(
+								'email' => $obj->email,
+								'fk_contact' => $obj->fk_contact,
+								'name' => $obj->name,
+								'firstname' => $obj->firstname,
+								'other' => '',
+								'source_url' => $this->url($obj->id,'thirdparty'),
+								'source_id' => $obj->id,
+								'source_type' => 'thirdparty'
 						);
+						}
 					}
+					
+					$i++;
 				}
-		
-				$i++;
+			}
+			else
+			{
+				dol_syslog($this->db->error());
+				$this->error=$this->db->error();
+				return -1;
 			}
 		}
-		else
-		{
-			dol_syslog($this->db->error());
-			$this->error=$this->db->error();
-			return -1;
+		
+		if  (($type_of_target==1) || ($type_of_target==2)) {
+			// Select the third parties from category
+			if (count($socid)>0 || count($contactid)>0)
+			{
+				$sql= "SELECT socp.rowid as id, socp.email as email, socp.lastname as lastname, socp.firstname as firstname";
+				$sql.= " FROM ".MAIN_DB_PREFIX."socpeople as socp";
+				$sql.= " WHERE socp.entity IN (".getEntity('societe', 1).")";
+				if (count($contactid)>0) {
+					$sql.= " AND socp.rowid IN (".implode(',',$contactid).")";
+				} 
+				if (count($socid)>0) {
+					$sql.= " AND socp.fk_soc IN (".implode(',',$socid).")";
+				}
+				$sql.= " ORDER BY email";
+			}
+			
+			
+			dol_syslog(get_class($this)."::add_to_target contact sql=".$sql);
+			// Stock recipients emails into targets table
+			$result=$this->db->query($sql);
+			if ($result)
+			{
+				$num = $this->db->num_rows($result);
+				$i = 0;
+			
+				dol_syslog(get_class($this)."::add_to_target mailing ".$num." targets found");
+			
+				$old = '';
+				while ($i < $num)
+				{
+					$obj = $this->db->fetch_object($result);
+			
+					if (!empty($obj->email)) {
+						if (!array_key_exists($obj->email, $cibles)) {
+							$cibles[$obj->email] = array(
+								'email' => $obj->email,
+								'fk_contact' =>$obj->id,
+								'lastname' => $obj->lastname,
+								'firstname' => $obj->firstname,
+								'other' => '',
+								'source_url' => $this->url($obj->id,'contact'),
+								'source_id' => $obj->id,
+								'source_type' => 'contact'
+							);
+						}
+					}
+			
+					$i++;
+				}
+			}
+			else
+			{
+				dol_syslog($this->db->error());
+				$this->error=$this->db->error();
+				return -1;
+			}
 		}
 
 		
