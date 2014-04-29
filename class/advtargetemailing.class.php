@@ -479,19 +479,20 @@ class AdvanceTargetingMailing extends CommonObject
 				$sqlwhere[]= $this->transformToSQL('t.nom',$arrayquery['cust_name']);
 			}
 			if (!empty($arrayquery['cust_code'])) {
-				$sqlwhere[]= " (t.code_client LIKE '".$arrayquery['cust_code']."')";
+				$sqlwhere[]= $this->transformToSQL('t.code_client',$arrayquery['cust_code']);
 			}
 			if (!empty($arrayquery['cust_adress'])) {
-				$sqlwhere[]= " (t.address LIKE '".$arrayquery['cust_adress']."')";
+				$sqlwhere[]= $this->transformToSQL('t.address',$arrayquery['cust_adress']);
 			}
 			if (!empty($arrayquery['cust_zip'])) {
-				$sqlwhere[]= " (t.cp LIKE '".$arrayquery['cust_zip']."')";
+				$sqlwhere[]= $this->transformToSQL('t.cp',$arrayquery['cust_zip']);
 			}
 			if (!empty($arrayquery['cust_city'])) {
-				$sqlwhere[]= " (t.ville LIKE '".$arrayquery['cust_city']."')";
+				$sqlwhere[]= $this->transformToSQL('t.ville',$arrayquery['cust_city']);
 			}
 			if (!empty($arrayquery['cust_mothercompany'])) {
-				$sqlwhere[]= " (t.parent IN (SELECT rowid FROM " . MAIN_DB_PREFIX . "societe WHERE nom LIKE '".$arrayquery['cust_mothercompany']."'))";
+				$str=$this->transformToSQL('nom',$arrayquery['cust_mothercompany']);
+				$sqlwhere[]= " (t.parent IN (SELECT rowid FROM " . MAIN_DB_PREFIX . "societe WHERE ('.$str.')))";
 			}
 			if (!empty($arrayquery['cust_status']) && count($arrayquery['cust_status'])>0) {
 				$sqlwhere[]= " (t.status IN (".implode(',',$arrayquery['cust_status'])."))";
@@ -613,10 +614,10 @@ class AdvanceTargetingMailing extends CommonObject
 				
 
 			if (!empty($arrayquery['contact_lastname'])) {
-				$sqlwhere[]= " (t.lastname LIKE '".$arrayquery['contact_lastname']."')";
+				$sqlwhere[]=$this->transformToSQL('t.lastname',$arrayquery['contact_lastname']);
 			}
 			if (!empty($arrayquery['contact_firstname'])) {
-				$sqlwhere[]= " (t.firstname LIKE '".$arrayquery['contact_firstname']."')";
+				$sqlwhere[]=$this->transformToSQL('t.firstname',$arrayquery['contact_firstname']);
 			}
 			if (!empty($arrayquery['contact_country']) && count($arrayquery['contact_country'])) {
 				$sqlwhere[]= " (t.fk_pays IN (".implode(',',$arrayquery['contact_country'])."))";
