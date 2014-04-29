@@ -20,6 +20,7 @@
 CREATE TABLE IF NOT EXISTS llx_advtargetemailing
 (
   rowid integer NOT NULL auto_increment PRIMARY KEY,
+  name varchar(200) NOT NULL,
   entity integer NOT NULL DEFAULT 1,
   fk_mailing	integer NOT NULL,
   filtervalue	text,

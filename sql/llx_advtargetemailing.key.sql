@@ -14,4 +14,4 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-ALTER TABLE llx_advtargetemailing ADD UNIQUE INDEX uk_advtargetemailing_fk_mailing (fk_mailing);
+ALTER TABLE llx_advtargetemailing ADD UNIQUE INDEX uk_advtargetemailing_name (name);

@@ -354,4 +354,47 @@ class FormAdvTargetEmailing extends Form {
 		
 		return $return;
 	}
+	
+	public function select_advtargetemailing_template($htmlname='template_id',$selected=0,$showempty=0) {
+		global $conf, $user, $langs;
+		
+		$out = '';
+		
+		$sql = "SELECT c.rowid, c.name, c.fk_mailing";
+		$sql .= " FROM " . MAIN_DB_PREFIX . "advtargetemailing as c";
+		$sql .= " ORDER BY c.name";
+		
+		dol_syslog ( get_class ( $this ) . "::select_advtargetemailing_template sql=" . $sql, LOG_DEBUG );
+		$resql = $this->db->query ( $sql );
+		if ($resql) {
+			
+				
+			$out .= '<select id="' . $htmlname . '" class="flat" name="' . $htmlname . '">';
+			if ($showempty)
+				$out .= '<option value=""></option>';
+			$num = $this->db->num_rows ( $resql );
+			$i = 0;
+			if ($num) {
+				while ( $i < $num ) {
+					$obj = $this->db->fetch_object ( $resql );
+					$label = $obj->name;
+					if (empty($label)) {
+						$label=$obj->fk_mailing;
+					}
+						
+					if ($selected > 0 && $selected == $obj->rowid) {
+						$out .= '<option value="' . $obj->rowid . '" selected="selected">' . $label . '</option>';
+					} else {
+						$out .= '<option value="' . $obj->rowid . '">' . $label . '</option>';
+					}
+					$i ++;
+				}
+			}
+			$out .= '</select>';
+		} else {
+			dol_print_error ( $this->db );
+		}
+		$this->db->free ( $resql );
+		return $out;
+	}
 }

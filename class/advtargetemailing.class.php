@@ -38,6 +38,7 @@ class AdvanceTargetingMailing extends CommonObject
 	
 	var $id;
 	
+	var $name;
 	var $entity;
 	var $fk_mailing;
 	var $filtervalue;
@@ -92,6 +93,7 @@ class AdvanceTargetingMailing extends CommonObject
 	
 		// Clean parameters
 		if (isset($this->fk_mailing)) $this->fk_mailing=trim($this->fk_mailing);
+		if (isset($this->name)) $this->name=trim($this->name);
 		if (isset($this->filtervalue)) $this->filtervalue=trim($this->filtervalue);
 		if (isset($this->fk_user_author)) $this->fk_user_author=trim($this->fk_user_author);
 		if (isset($this->fk_user_mod)) $this->fk_user_mod=trim($this->fk_user_mod);
@@ -104,6 +106,7 @@ class AdvanceTargetingMailing extends CommonObject
 		// Insert request
 		$sql = "INSERT INTO ".MAIN_DB_PREFIX."advtargetemailing(";
 	
+		$sql.= "name,";
 		$sql.= "entity,";
 		$sql.= "fk_mailing,";
 		$sql.= "filtervalue,";
@@ -114,6 +117,7 @@ class AdvanceTargetingMailing extends CommonObject
 	
 		$sql.= ") VALUES (";
 	
+		$sql.= " ".(! isset($this->name)?'NULL':"'".$this->db->escape($this->name)."'").",";
 		$sql.= " ".$conf->entity.",";
 		$sql.= " ".(! isset($this->fk_mailing)?'NULL':"'".$this->fk_mailing."'").",";
 		$sql.= " ".(! isset($this->filtervalue)?'NULL':"'".$this->db->escape($this->filtervalue)."'").",";
@@ -177,7 +181,8 @@ class AdvanceTargetingMailing extends CommonObject
 		global $langs;
 		$sql = "SELECT";
 		$sql.= " t.rowid,";
-	
+		
+		$sql.= " t.name,";
 		$sql.= " t.entity,";
 		$sql.= " t.fk_mailing,";
 		$sql.= " t.filtervalue,";
@@ -199,6 +204,7 @@ class AdvanceTargetingMailing extends CommonObject
 	
 				$this->id    = $obj->rowid;
 	
+				$this->name = $obj->name;
 				$this->entity = $obj->entity;
 				$this->fk_mailing = $obj->fk_mailing;
 				$this->filtervalue = $obj->filtervalue;
@@ -232,6 +238,7 @@ class AdvanceTargetingMailing extends CommonObject
 		$sql = "SELECT";
 		$sql.= " t.rowid,";
 	
+		$sql.= " t.name,";
 		$sql.= " t.entity,";
 		$sql.= " t.fk_mailing,";
 		$sql.= " t.filtervalue,";
@@ -257,6 +264,7 @@ class AdvanceTargetingMailing extends CommonObject
 	
 				$this->id    = $obj->rowid;
 	
+				$this->name = $obj->name;
 				$this->entity = $obj->entity;
 				$this->fk_mailing = $obj->fk_mailing;
 				$this->filtervalue = $obj->filtervalue;
@@ -292,6 +300,7 @@ class AdvanceTargetingMailing extends CommonObject
 	
 		// Clean parameters
 		if (isset($this->fk_mailing)) $this->fk_mailing=trim($this->fk_mailing);
+		if (isset($this->name)) $this->name=trim($this->name);
 		if (isset($this->filtervalue)) $this->filtervalue=trim($this->filtervalue);
 		if (isset($this->fk_user_author)) $this->fk_user_author=trim($this->fk_user_author);
 		if (isset($this->fk_user_mod)) $this->fk_user_mod=trim($this->fk_user_mod);
@@ -304,6 +313,7 @@ class AdvanceTargetingMailing extends CommonObject
 		// Update request
 		$sql = "UPDATE ".MAIN_DB_PREFIX."advtargetemailing SET";
 	
+		$sql.= " name=".(isset($this->name)?"'".$this->db->escape($this->name)."'":"''").",";
 		$sql.= " entity=".$conf->entity.",";
 		$sql.= " fk_mailing=".(isset($this->fk_mailing)?$this->fk_mailing:"null").",";
 		$sql.= " filtervalue=".(isset($this->filtervalue)?"'".$this->db->escape($this->filtervalue)."'":"null").",";
@@ -465,7 +475,8 @@ class AdvanceTargetingMailing extends CommonObject
 			$sqlwhere=array();
 			
 			if (!empty($arrayquery['cust_name'])) {
-				$sqlwhere[]= " (t.nom LIKE '".$arrayquery['cust_name']."')";
+				
+				$sqlwhere[]= $this->transformToSQL('t.nom',$arrayquery['cust_name']);
 			}
 			if (!empty($arrayquery['cust_code'])) {
 				$sqlwhere[]= " (t.code_client LIKE '".$arrayquery['cust_code']."')";
@@ -534,7 +545,9 @@ class AdvanceTargetingMailing extends CommonObject
 							$sqlwhere[]= " (te.".$key." >= '".$this->db->idate($arrayquery['options_'.$key.'_st_dt'])."' AND te.".$key." <= '".$this->db->idate($arrayquery['options_'.$key.'_end_dt'])."')";
 						}
 					}else{
-						if (!empty($arrayquery['options_'.$key])) {
+						if (is_array($arrayquery['options_'.$key])) {
+							$sqlwhere[]= " (te.".$key." IN ('".implode("','",$arrayquery['options_'.$key])."'))";
+						} elseif (!empty($arrayquery['options_'.$key])) {
 							$sqlwhere[]= " (te.".$key." LIKE '".$arrayquery['options_'.$key]."')";
 						}
 					}
@@ -693,6 +706,49 @@ class AdvanceTargetingMailing extends CommonObject
 			dol_syslog(get_class($this) . "::query_contact " . $this->error, LOG_ERR);
 			return -1;
 		}
+	}
+	
+	
+	/**
+	 * Parse criteria to return a SQL qury formated
+	 *
+	 * 	@param		string		$column_to_test	column to test
+	 *  @param		string		$criteria	Use %% as magic caracters. For exemple to find all item like <b>jean, joe, jim</b>, you can input <b>j%%</b>, you can also use ; as separator for value,
+	 *  									 and use ! for except this value. 
+	 *  									For exemple  jean;joe;jim%%;!jimo;!jima%> will target all jean, joe, start with jim but not jimo and not everythnig taht start by jima
+	 * 	@return		int			<0 if KO, >0 if OK
+	 */
+	public function transformToSQL($column_to_test,$criteria) {
+		$return_sql_criteria = '(';
+		
+		//This is a multiple value test
+		if (preg_match('/;/',$criteria)) {
+			$return_sql_not_like=array();
+			$return_sql_like=array();
+			
+			$criteria_array=explode(';',$criteria);
+			foreach($criteria_array as $inter_criteria) {
+				if (preg_match('/!/',$inter_criteria)) {
+					$return_sql_not_like[]= '('.$column_to_test.' NOT LIKE \''.str_replace('!', '', $inter_criteria).'\')';
+				} else {
+					$return_sql_like[]= '('.$column_to_test.' LIKE \''.$inter_criteria.'\')';
+				}
+			}
+			
+			if (count($return_sql_like)>0) {
+				$return_sql_criteria .= '(' . implode (' OR ', $return_sql_like) .')';
+			}
+			if (count($return_sql_not_like)>0) {
+				$return_sql_criteria .= ' AND (' . implode (' AND ', $return_sql_not_like).')';
+			}
+			
+		}else {
+			$return_sql_criteria .= $column_to_test . ' LIKE \''.$this->db->escape($criteria).'\'';
+		}
+		
+		$return_sql_criteria .= ')';
+		
+		return $return_sql_criteria;
 	}
 
 
