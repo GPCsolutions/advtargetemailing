@@ -50,7 +50,7 @@ AdvTgtTabsTarget=Selection destinataire avancé
 # Advance targeting string
 #
 AdvTgtTitle=Remplisser les champs pour pouvoir préselectionné les destinataires
-AdvTgtSearchTextHelp=Utilez "%%" comme caratére magique pour remplacé n'importe lequel. <BR> Par exemple pour trouvez toute terme commencant par "j" vous devez écrire j%%. Vous pouvez également utilisé ; comme séparateur, et utilisé  ! pour "sauf". par exemple  <b>jean;joe;jim%%;!jimo;!jima%</b> selectionnera jean, joe, commence par jim mais pas jimo  ni tout ca qui commence par jima
+AdvTgtSearchTextHelp=Utilisez "%%" comme caractére magique pour remplacé n'importe lequel. <BR> Par exemple pour trouvez tout terme commencant par "j" vous devez écrire j%%. Vous pouvez également utilisé ; comme séparateur, et utilisé  ! pour "sauf". par exemple  <b>jean;joe;jim%%;!jimo;!jima%</b> selectionnera jean, joe, commence par jim mais pas jimo  ni tout ca qui commence par jima
 AdvTgtSearchIntHelp=Utilisez un intervale pour selectionné un nombre
 AdvTgtMinVal=Valeur minimum
 AdvTgtMaxVal=Valeur maximum
