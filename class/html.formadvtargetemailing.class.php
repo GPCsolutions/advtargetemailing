@@ -174,7 +174,6 @@ class FormAdvTargetEmailing extends Form {
 		} else {
 			dol_print_error ( $this->db );
 		}
-		$moreforfilter .= '</select>';
 		
 		return $this->multiselectarray ( $htmlname, $options_array, $selected_array );
 	}
