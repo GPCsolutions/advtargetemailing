@@ -117,7 +117,7 @@ if ($action == 'add') {
 	
 	foreach ( $_POST as $key => $value ) {
 		// print '$key='.$key.' $value='.$value.'<BR>';
-		if (preg_match ( "/^options_/", $key )) {
+		if (preg_match ( "/^options_.*(?<!_cnct)$/", $key )) {
 			// Special case for start date come with 3 inputs day, month, year
 			if (preg_match ( "/st_dt/", $key )) {
 				$dtarr = array ();
@@ -136,21 +136,21 @@ if ($action == 'add') {
 				$array_query [$key] = GETPOST ( $key );
 			}
 		}
-		if (preg_match ( "/^cnct_options_/", $key )) {
+		if (preg_match ( "/^options_.*_cnct/", $key )) {
 			$user_contact_query = true;
 			// Special case for start date come with 3 inputs day, month, year
 			if (preg_match ( "/st_dt/", $key )) {
 				$dtarr = array ();
 				$dtarr = explode ( '_', $key );
-				if (! array_key_exists ( 'cnct_options_' . $dtarr [1] . '_st_dt', $array_query )) {
-					$array_query ['cnct_options_' . $dtarr [1] . '_st_dt'] = dol_mktime ( 0, 0, 0, GETPOST ( 'cnct_options_' . $dtarr [1] . '_st_dtmonth', 'int' ), GETPOST ( 'cnct_options_' . $dtarr [1] . '_st_dtday', 'int' ), GETPOST ( 'cnct_options_' . $dtarr [1] . '_st_dtyear', 'int' ) );
+				if (! array_key_exists ( 'options_' . $dtarr [1] . '_st_dt'.'_cnct', $array_query )) {
+					$array_query ['options_' . $dtarr [1] . '_st_dt'.'_cnct'] = dol_mktime ( 0, 0, 0, GETPOST ( 'options_' . $dtarr [1] . '_st_dtmonth'.'_cnct', 'int' ), GETPOST ( 'options_' . $dtarr [1] . '_st_dtday'.'_cnct', 'int' ), GETPOST ( 'options_' . $dtarr [1] . '_st_dtyear'.'_cnct', 'int' ) );
 				}
 			} elseif (preg_match ( "/end_dt/", $key )) {
 				// Special case for end date come with 3 inputs day, month, year
 				$dtarr = array ();
 				$dtarr = explode ( '_', $key );
-				if (! array_key_exists ( 'cnct_options_' . $dtarr [1] . '_end_dt', $array_query )) {
-					$array_query ['cnct_options_' . $dtarr [1] . '_end_dt'] = dol_mktime ( 0, 0, 0, GETPOST ( 'cnct_options_' . $dtarr [1] . '_end_dtmonth', 'int' ), GETPOST ( 'cnct_options_' . $dtarr [1] . '_end_dtday', 'int' ), GETPOST ( 'cnct_options_' . $dtarr [1] . '_end_dtyear', 'int' ) );
+				if (! array_key_exists ( 'options_' . $dtarr [1] . '_end_dt'.'_cnct', $array_query )) {
+					$array_query ['options_' . $dtarr [1] . '_end_dt'.'_cnct'] = dol_mktime ( 0, 0, 0, GETPOST ( 'options_' . $dtarr [1] . '_end_dtmonth'.'_cnct', 'int' ), GETPOST ( 'options_' . $dtarr [1] . '_end_dtday'.'_cnct', 'int' ), GETPOST ( 'options_' . $dtarr [1] . '_end_dtyear'.'_cnct', 'int' ) );
 				}
 			} else {
 				$array_query [$key] = GETPOST ( $key );
@@ -224,6 +224,17 @@ if ($action == 'add') {
 		$result = 0;
 	}
 	
+	if (!empty($template_id)) {
+		$result = $advTarget->fetch($template_id);
+		if ($result < 0) {
+			setEventMessage ( $advTarget->error, 'errors' );
+		} else {
+			if (! empty ( $advTarget->id )) {
+				$array_query = json_decode ( $advTarget->filtervalue, true );
+			}
+		}
+	}
+	
 	if ($result > 0) {
 		header ( "Location: " . $_SERVER ['PHP_SELF'] . "?id=" . $id );
 		exit ();
@@ -262,7 +273,7 @@ if ($action == 'savefilter' || $action == 'createfilter') {
 		
 		// Get extra fields
 		foreach ( $_POST as $key => $value ) {
-			if (preg_match ( "/^options_/", $key )) {
+			if (preg_match ( "/^options_.*(?<!_cnct)$/", $key )) {
 				// Special case for start date come with 3 inputs day, month, year
 				if (preg_match ( "/st_dt/", $key )) {
 					$dtarr = array ();
@@ -283,20 +294,20 @@ if ($action == 'savefilter' || $action == 'createfilter') {
 					$array_query [$key] = GETPOST ( $key );
 				}
 			}
-			if (preg_match ( "/^cnct_options_/", $key )) {
+			if (preg_match ( "/^options_.*_cnct/", $key )) {
 				// Special case for start date come with 3 inputs day, month, year
 				if (preg_match ( "/st_dt/", $key )) {
 					$dtarr = array ();
 					$dtarr = explode ( '_', $key );
-					if (! array_key_exists ( 'cnct_options_' . $dtarr [1] . '_st_dt', $array_query )) {
-						$array_query ['cnct_options_' . $dtarr [1] . '_st_dt'] = dol_mktime ( 0, 0, 0, GETPOST ( 'cnct_options_' . $dtarr [1] . '_st_dtmonth', 'int' ), GETPOST ( 'cnct_options_' . $dtarr [1] . '_st_dtday', 'int' ), GETPOST ( 'cnct_options_' . $dtarr [1] . '_st_dtyear', 'int' ) );
+					if (! array_key_exists ( 'options_' . $dtarr [1] . '_st_dt'.'_cnct', $array_query )) {
+						$array_query ['options_' . $dtarr [1] . '_st_dt'.'_cnct'] = dol_mktime ( 0, 0, 0, GETPOST ( 'options_' . $dtarr [1] . '_st_dtmonth'.'_cnct', 'int' ), GETPOST ( 'options_' . $dtarr [1] . '_st_dtday'.'_cnct', 'int' ), GETPOST ( 'options_' . $dtarr [1] . '_st_dtyear'.'_cnct', 'int' ) );
 					}
 				} elseif (preg_match ( "/end_dt/", $key )) {
 					// Special case for end date come with 3 inputs day, month, year
 					$dtarr = array ();
 					$dtarr = explode ( '_', $key );
-					if (! array_key_exists ( 'cnct_options_' . $dtarr [1] . '_end_dt', $array_query )) {
-						$array_query ['cnct_options_' . $dtarr [1] . '_end_dt'] = dol_mktime ( 0, 0, 0, GETPOST ( 'cnct_options_' . $dtarr [1] . '_end_dtmonth', 'int' ), GETPOST ( 'cnct_options_' . $dtarr [1] . '_end_dtday', 'int' ), GETPOST ( 'cnct_options_' . $dtarr [1] . '_end_dtyear', 'int' ) );
+					if (! array_key_exists ( 'options_' . $dtarr [1] . '_end_dt'.'_cnct', $array_query )) {
+						$array_query ['options_' . $dtarr [1] . '_end_dt'.'_cnct'] = dol_mktime ( 0, 0, 0, GETPOST ( 'options_' . $dtarr [1] . '_end_dtmonth'.'_cnct', 'int' ), GETPOST ( 'options_' . $dtarr [1] . '_end_dtday'.'_cnct', 'int' ), GETPOST ( 'options_' . $dtarr [1] . '_end_dtyear'.'_cnct', 'int' ) );
 						// print $array_query['cnct_options_'.$dtarr[1].'_end_dt'];
 						// 01/02/1013=1361228400
 					}
@@ -540,13 +551,13 @@ if ($object->fetch ( $id ) >= 0) {
 		print '</td></tr>' . "\n";
 		
 		// Address Client
-		/*print '<tr><td>' . $langs->trans ( 'Address' );
+		print '<tr><td>' . $langs->trans ( 'Address' );
 		if (!empty($array_query ['cust_adress'])) {
 			print img_picto($langs->trans('AdvTgtUse'), 'ok.png@advtargetemailing');
 		}
 		print '</td><td><input type="text" name="cust_adress" value="' . $array_query ['cust_adress'] . '"/></td><td>' . "\n";
 		print $form->textwithpicto ( '', $langs->trans ( "AdvTgtSearchTextHelp" ), 1, 'help' );
-		print '</td></tr>' . "\n";*/
+		print '</td></tr>' . "\n";
 		
 		// Zip Client
 		print '<tr><td>' . $langs->trans ( 'Zip' );
@@ -845,66 +856,59 @@ if ($object->fetch ( $id ) >= 0) {
 			$extrafields = new ExtraFields ( $db );
 			$extralabels = $extrafields->fetch_name_optionals_label ( 'socpeople' );
 			foreach ( $extralabels as $key => $val ) {
-					if ($key != 'ct_raison_inactif' 
-							&& $key != 'ct_precision_origine'
-							&& $key != 'ct_invitation'
-							&& $key != 'ct_catalogue'
-							&& $key != 'ct_mailing_papier'
-							&& $key != 'ct_superieur'
-							&& $key != 'ct_assistant') {
+					
 					print '<tr><td>' . $extrafields->attribute_label [$key];
-					if ($array_query['cnct_options_' .$key]!='' || (is_array($array_query['cnct_options_' .$key]) && count($array_query['cnct_options_' .$key])>0)) {
+					if ($array_query['options_' .$key.'_cnct']!='' || (is_array($array_query['options_' .$key.'_cnct']) && count($array_query['options_' .$key.'_cnct'])>0)) {
 						print img_picto($langs->trans('AdvTgtUse'), 'ok.png@advtargetemailing');
 					}
 					print '</td><td>';
 					if (($extrafields->attribute_type [$key] == 'varchar') || ($extrafields->attribute_type [$key] == 'text')) {
-						print '<input type="text" name="cnct_options_' . $key . '"/></td><td>' . "\n";
+						print '<input type="text" name="options_' . $key . '_cnct"/></td><td>' . "\n";
 						print $form->textwithpicto ( '', $langs->trans ( "AdvTgtSearchTextHelp" ), 1, 'help' );
 					} elseif (($extrafields->attribute_type [$key] == 'int') || ($extrafields->attribute_type [$key] == 'double')) {
-						print $langs->trans ( "AdvTgtMinVal" ) . '<input type="text" name="cnct_options' . $key . '_min"/>';
-						print $langs->trans ( "AdvTgtMaxVal" ) . '<input type="text" name="cnct_options' . $key . '_max"/>';
+						print $langs->trans ( "AdvTgtMinVal" ) . '<input type="text" name="options' . $key . '_min_cnct"/>';
+						print $langs->trans ( "AdvTgtMaxVal" ) . '<input type="text" name="options' . $key . '_max_cnct"/>';
 						print '</td><td>' . "\n";
 						print $form->textwithpicto ( '', $langs->trans ( "AdvTgtSearchIntHelp" ), 1, 'help' );
 					} elseif (($extrafields->attribute_type [$key] == 'date') || ($extrafields->attribute_type [$key] == 'datetime')) {
 						
 						print '<table class="nobordernopadding"><tr>';
 						print '<td>' . $langs->trans ( "AdvTgtStartDt" ) . '</td><td>';
-						print $form->select_date ( '', 'cnct_options_' . $key . '_st_dt' );
+						print $form->select_date ( '', 'options_' . $key . '_st_dt'.'_cnct' );
 						print '</td><td>' . $langs->trans ( "AdvTgtEndDt" ) . '</td><td>';
-						print $form->select_date ( '', 'cnct_options_' . $key . '_end_dt' );
+						print $form->select_date ( '', 'options_' . $key . '_end_dt'.'_cnct' );
 						print '</td></tr></table>';
 						
 						print '</td><td>' . "\n";
 						print $form->textwithpicto ( '', $langs->trans ( "AdvTgtSearchDtHelp" ), 1, 'help' );
 					} elseif (($extrafields->attribute_type [$key] == 'boolean')) {
-						print $form->selectarray ( 'cnct_options_' . $key, array (
+						print $form->selectarray ( 'options_' . $key.'_cnct', array (
 								'' => '',
 								'1' => $langs->trans ( 'Yes' ),
 								'0' => $langs->trans ( 'No' ) 
-						), $array_query ['cnct_options_' . $key] );
+						), $array_query ['options_' . $key.'_cnct'] );
 						print '</td><td>' . "\n";
 					} elseif (($extrafields->attribute_type [$key] == 'select')) {
-						print $formadvtargetemaling->multiselectarray('cnct_options_' .$key, $extrafields->attribute_param[$key]['options'],$array_query['cnct_options_' .$key]);
+						print $formadvtargetemaling->multiselectarray('options_' .$key.'_cnct', $extrafields->attribute_param[$key]['options'],$array_query['options_' .$key.'_cnct']);
 						print '</td><td>' . "\n";
 					}
 					elseif (($extrafields->attribute_type [$key] == 'sellist')) {
-						print $formadvtargetemaling->multiselectarray_selllist('cnct_options_' .$key, $extrafields->attribute_param[$key]['options'],$array_query['cnct_options_' .$key]);
+						print $formadvtargetemaling->multiselectarray_selllist('options_' .$key.'_cnct', $extrafields->attribute_param[$key]['options'],$array_query['options_' .$key.'_cnct']);
 						print '</td><td>' . "\n";
 					} else {
 						
 						print '<table class="nobordernopadding"><tr>';
 						print '<td></td><td>';
-						if (is_array ( $array_query ['cnct_options_' . $key] )) {
-							print $extrafields->showInputField ( $key, implode ( ',', $array_query ['cnct_options_' . $key] ), '', 'cnct_' );
+						if (is_array ( $array_query ['options_' . $key.'_cnct'] )) {
+							print $extrafields->showInputField ( $key, implode ( ',', $array_query ['options_' . $key.'_cnct'] ), '', '_cnct' );
 						} else {
-							print $extrafields->showInputField ( $key, $array_query ['cnct_options_' . $key], '', 'cnct_' );
+							print $extrafields->showInputField ( $key, $array_query ['options_' . $key.'_cnct'], '', '_cnct' );
 						}
 						print '</td></tr></table>';
 						
 						print '</td><td>' . "\n";
 					}
 					print '</td></tr>' . "\n";
-				}
 			}
 		}
 		

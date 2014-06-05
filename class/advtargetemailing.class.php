@@ -650,24 +650,24 @@ class AdvanceTargetingMailing extends CommonObject
 	
 					if (($extrafields->attribute_type[$key] == 'varchar') ||
 					($extrafields->attribute_type[$key] == 'text')) {
-						if (!empty($arrayquery['cnct_options_'.$key])) {
-							$sqlwhere[]= " (te.".$key." LIKE '".$arrayquery['cnct_options_'.$key]."')";
+						if (!empty($arrayquery['options_'.$key.'_cnct'])) {
+							$sqlwhere[]= " (te.".$key." LIKE '".$arrayquery['options_'.$key.'_cnct']."')";
 						}
 					} elseif (($extrafields->attribute_type[$key] == 'int') ||
 						($extrafields->attribute_type[$key] == 'double')) {
-						if (!empty($arrayquery['cnct_options_'.$key.'_max'])) {
-							$sqlwhere[]= " (te.".$key." >= ".$arrayquery['cnct_options_'.$key.'_max']." AND te.".$key." <= ".$arrayquery['cnct_options_'.$key.'_min'].")";
+						if (!empty($arrayquery['options_'.$key.'_max'.'_cnct'])) {
+							$sqlwhere[]= " (te.".$key." >= ".$arrayquery['options_'.$key.'_max'.'_cnct']." AND te.".$key." <= ".$arrayquery['options_'.$key.'_min'.'_cnct'].")";
 						}
 					} else if (($extrafields->attribute_type[$key] == 'date') ||
 					($extrafields->attribute_type[$key] == 'datetime')) {
-						if (!empty($arrayquery['cnct_options_'.$key.'_end_dt'])){
-							$sqlwhere[]= " (te.".$key." >= '".$this->db->idate($arrayquery['cnct_options_'.$key.'_st_dt'])."' AND te.".$key." <= '".$this->db->idate($arrayquery['cnct_options_'.$key.'_end_dt'])."')";
+						if (!empty($arrayquery['options_'.$key.'_end_dt'.'_cnct'])){
+							$sqlwhere[]= " (te.".$key." >= '".$this->db->idate($arrayquery['options_'.$key.'_st_dt'.'_cnct'])."' AND te.".$key." <= '".$this->db->idate($arrayquery['options_'.$key.'_end_dt'.'_cnct'])."')";
 						}
 					}else{
-						if (is_array($arrayquery['cnct_options_'.$key])) {
-							$sqlwhere[]= " (te.".$key." IN (".implode(',',$arrayquery['cnct_options_'.$key])."))";
+						if (is_array($arrayquery['options_'.$key.'_cnct'])) {
+							$sqlwhere[]= " (te.".$key." IN ('".implode("','",$arrayquery['options_'.$key.'_cnct'])."'))";
 						} elseif (!empty($arrayquery['cnct_options_'.$key])) {
-							$sqlwhere[]= " (te.".$key." LIKE '".$arrayquery['cnct_options_'.$key]."')";
+							$sqlwhere[]= " (te.".$key." LIKE '".$arrayquery['options_'.$key.'_cnct']."')";
 						}
 					}
 	
