@@ -179,6 +179,31 @@ class FormAdvTargetEmailing extends Form {
 	}
 	
 	/**
+	 * Return select list for categories (to use in form search selectors)
+	 *
+	 * @param string $selected value
+	 * @param string $htmlname of combo list (example: 'search_sale')
+	 * @param User $user user
+	 * @return string combo list code
+	 */
+	function multiselectselect_language($htmlname, $selected_array) {
+	
+		global $conf,$langs;
+	
+		$options_array = array ();
+	
+		$langs_available=$langs->get_available_languages(DOL_DOCUMENT_ROOT,12);
+	
+		foreach ($langs_available as $key => $value)
+		{
+			$label = $value;
+			$options_array [$key] = $label;
+		}
+	
+		return $this->multiselectarray ( $htmlname, $options_array, $selected_array );
+	}
+	
+	/**
 	 *  Return multiselect list of entities for extrafeild type sellist
 	 *
 	 * @param string $htmlname select

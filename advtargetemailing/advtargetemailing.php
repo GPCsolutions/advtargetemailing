@@ -224,19 +224,12 @@ if ($action == 'add') {
 		$result = 0;
 	}
 	
-	if (!empty($template_id)) {
-		$result = $advTarget->fetch($template_id);
-		if ($result < 0) {
-			setEventMessage ( $advTarget->error, 'errors' );
-		} else {
-			if (! empty ( $advTarget->id )) {
-				$array_query = json_decode ( $advTarget->filtervalue, true );
-			}
-		}
-	}
-	
 	if ($result > 0) {
-		header ( "Location: " . $_SERVER ['PHP_SELF'] . "?id=" . $id );
+		$query_temlate_id='';
+		if (!empty($template_id)) {
+			$query_temlate_id='&template_id='.template_id;
+		}
+		header ( "Location: " . $_SERVER ['PHP_SELF'] . "?id=" . $id .$query_temlate_id );
 		exit ();
 	}
 	if ($result == 0) {
@@ -673,6 +666,19 @@ if ($object->fetch ( $id ) >= 0) {
 		print '</td><td>' . "\n";
 		print '</td></tr>' . "\n";
 		
+		// Customer Default Langauge
+		if (! empty($conf->global->MAIN_MULTILANGS))
+		{
+			
+			print '<tr><td>' . $langs->trans ( "DefaultLang" );
+			if (count($array_query ['cust_language'])>0) {
+				print img_picto($langs->trans('AdvTgtUse'), 'ok.png@advtargetemailing');
+			}
+			print '</td><td>' . "\n";
+			print $formadvtargetemaling->multiselectselect_language ( 'cust_language', $array_query ['cust_language'] );
+			print '</td><td>' . "\n";
+			print '</td></tr>' . "\n";
+		}
 		
 		
 		// Standard Extrafield feature
