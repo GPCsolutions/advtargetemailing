@@ -545,6 +545,10 @@ class AdvanceTargetingMailing extends CommonObject
 						if (!empty($arrayquery['options_'.$key.'_end_dt'])){
 							$sqlwhere[]= " (te.".$key." >= '".$this->db->idate($arrayquery['options_'.$key.'_st_dt'])."' AND te.".$key." <= '".$this->db->idate($arrayquery['options_'.$key.'_end_dt'])."')";
 						}
+					}else if ($extrafields->attribute_type[$key] == 'boolean') {
+						if ($arrayquery['options_'.$key]!=''){
+							$sqlwhere[]= " (te.".$key." = ".$arrayquery['options_'.$key].")";
+						}
 					}else{
 						if (is_array($arrayquery['options_'.$key])) {
 							$sqlwhere[]= " (te.".$key." IN ('".implode("','",$arrayquery['options_'.$key])."'))";
@@ -662,6 +666,10 @@ class AdvanceTargetingMailing extends CommonObject
 					($extrafields->attribute_type[$key] == 'datetime')) {
 						if (!empty($arrayquery['options_'.$key.'_end_dt'.'_cnct'])){
 							$sqlwhere[]= " (te.".$key." >= '".$this->db->idate($arrayquery['options_'.$key.'_st_dt'.'_cnct'])."' AND te.".$key." <= '".$this->db->idate($arrayquery['options_'.$key.'_end_dt'.'_cnct'])."')";
+						}
+					}else if ($extrafields->attribute_type[$key] == 'boolean') {
+						if ($arrayquery['options_'.$key.'_cnct']!=''){
+							$sqlwhere[]= " (te.".$key." = ".$arrayquery['options_'.$key.'_cnct'].")";
 						}
 					}else{
 						if (is_array($arrayquery['options_'.$key.'_cnct'])) {
