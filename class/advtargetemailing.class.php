@@ -485,10 +485,10 @@ class AdvanceTargetingMailing extends CommonObject
 				$sqlwhere[]= $this->transformToSQL('t.address',$arrayquery['cust_adress']);
 			}
 			if (!empty($arrayquery['cust_zip'])) {
-				$sqlwhere[]= $this->transformToSQL('t.cp',$arrayquery['cust_zip']);
+				$sqlwhere[]= $this->transformToSQL('t.zip',$arrayquery['cust_zip']);
 			}
 			if (!empty($arrayquery['cust_city'])) {
-				$sqlwhere[]= $this->transformToSQL('t.ville',$arrayquery['cust_city']);
+				$sqlwhere[]= $this->transformToSQL('t.town',$arrayquery['cust_city']);
 			}
 			if (!empty($arrayquery['cust_mothercompany'])) {
 				$str=$this->transformToSQL('nom',$arrayquery['cust_mothercompany']);
