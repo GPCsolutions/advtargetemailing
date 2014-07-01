@@ -669,7 +669,11 @@ class AdvanceTargetingMailing extends CommonObject
 						}
 					}else if ($extrafields->attribute_type[$key] == 'boolean') {
 						if ($arrayquery['options_'.$key.'_cnct']!=''){
-							$sqlwhere[]= " (te.".$key." = ".$arrayquery['options_'.$key.'_cnct'].")";
+							if ($arrayquery['options_'.$key.'_cnct']==0) {
+								$sqlwhere[]= " (te.".$key." = ".$arrayquery['options_'.$key.'_cnct']." OR ((te.".$key." IS NULL) AND (te.fk_object IS NOT NULL)))";
+							}else {
+								$sqlwhere[]= " (te.".$key." = ".$arrayquery['options_'.$key.'_cnct'].")";
+							}
 						}
 					}else{
 						if (is_array($arrayquery['options_'.$key.'_cnct'])) {
