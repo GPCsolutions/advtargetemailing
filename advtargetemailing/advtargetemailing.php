@@ -813,7 +813,7 @@ if ($object->fetch ( $id ) >= 0) {
 		
 		// Never send mass mailing
 		print '<tr><td>' . $langs->trans ( 'Contact' ) . ' ' . $langs->trans ( "No_Email" );
-		if (count($array_query ['contact_no_email'])>0) {
+		if (!empty($array_query ['contact_no_email'])) {
 			print img_picto($langs->trans('AdvTgtUse'), 'ok.png@advtargetemailing');
 		}
 		print '</td><td>' . "\n";
