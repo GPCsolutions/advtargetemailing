@@ -379,6 +379,77 @@ class FormAdvTargetEmailing extends Form {
 		return $return;
 	}
 	
+	/**
+	 *  Return combo list with customer categories
+	 *
+	 *  @param  string	$htmlname   Name of categorie
+	 * 	@param	array	$selected_array	value selected
+	 *  @return	void
+	 */
+	function multiselect_customercategories($htmlname='cust_cat',$selected_array = array())
+	{
+		return $this->multiselect_categories($htmlname,$selected_array,2);
+	}
+	
+	/**
+	 *  Return combo list with customer contact
+	 *
+	 *  @param  string	$htmlname   Name of categorie
+	 * 	@param	array	$selected_array	value selected
+	 *  @return	void
+	 */
+	function multiselect_contactcategories($htmlname='contact_cat',$selected_array = array())
+	{
+		return $this->multiselect_categories($htmlname,$selected_array,4);
+	}
+	
+	/**
+	 *  Return combo list of categories
+	 *
+	 *  @param  string	$htmlname   Name of categorie
+	 * 	@param	array	$selected_array	value selected
+	 *  @return	void
+	 */
+	public function multiselect_categories($htmlname='',$selected_array = array(), $type=0)
+	{
+		global $conf,$langs,$user;
+		$langs->load("dict");
+	
+		$options_array=array();
+	
+	
+		$sql = "SELECT rowid, label FROM ".MAIN_DB_PREFIX."categorie";
+		$sql.= " WHERE type=".$type;
+	
+		dol_syslog(get_class($this)."::multiselectselect_customercategories sql=".$sql);
+		$resql=$this->db->query($sql);
+		if ($resql)
+		{
+	
+			$num = $this->db->num_rows($resql);
+			$i = 0;
+			if ($num)
+			{
+				while ($i < $num)
+				{
+					$obj = $this->db->fetch_object($resql);
+	
+					$options_array[$obj->rowid]=$obj->label;
+	
+					$i++;
+				}
+			}
+	
+		}
+		else
+		{
+			dol_print_error($this->db);
+		}
+	
+		return $this->multiselectarray ( $htmlname, $options_array, $selected_array );
+	}
+	
+	
 	public function select_advtargetemailing_template($htmlname='template_id',$selected=0,$showempty=0) {
 		global $conf, $user, $langs;
 		

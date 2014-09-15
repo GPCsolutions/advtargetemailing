@@ -91,7 +91,7 @@ class mailing_advthirdparties extends MailingTargets
 				{
 					$obj = $this->db->fetch_object($result);
 					
-					if (!empty($obj->email)) {
+					if (!empty($obj->email) && filter_var($obj->email, FILTER_VALIDATE_EMAIL)) {
 						if (!array_key_exists($obj->email, $cibles)) {
 							$cibles[$obj->email] = array(
 								'email' => $obj->email,
@@ -149,7 +149,7 @@ class mailing_advthirdparties extends MailingTargets
 				{
 					$obj = $this->db->fetch_object($result);
 			
-					if (!empty($obj->email)) {
+					if (!empty($obj->email) && filter_var($obj->email, FILTER_VALIDATE_EMAIL)) {
 						if (!array_key_exists($obj->email, $cibles)) {
 							$cibles[$obj->email] = array(
 								'email' => $obj->email,

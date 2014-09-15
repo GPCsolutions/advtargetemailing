@@ -462,15 +462,14 @@ class AdvanceTargetingMailing extends CommonObject
 		$sql.= " FROM " . MAIN_DB_PREFIX . "societe as t";
 		$sql.= " LEFT OUTER JOIN " . MAIN_DB_PREFIX . "societe_extrafields as te ON te.fk_object=t.rowid ";
 		
-		
-		
-
 		if (count($arrayquery)>0) {
 			
 			if (array_key_exists('cust_saleman', $arrayquery)) {
 				$sql.= " LEFT OUTER JOIN " . MAIN_DB_PREFIX . "societe_commerciaux as saleman ON saleman.fk_soc=t.rowid ";
 			}
-			
+			if (array_key_exists('cust_categ', $arrayquery)) {
+				$sql.= " LEFT OUTER JOIN " . MAIN_DB_PREFIX . "categorie_societe as custcateg ON custcateg.fk_societe=t.rowid ";
+			}
 				
 			$sqlwhere=array();
 			
@@ -518,8 +517,9 @@ class AdvanceTargetingMailing extends CommonObject
 			if (!empty($arrayquery['cust_effectif_id']) && count($arrayquery['cust_effectif_id'])>0) {
 				$sqlwhere[]= " (t.fk_effectif IN (".implode(',',$arrayquery['cust_effectif_id'])."))";
 			}
-			
-			
+			if (!empty($arrayquery['cust_categ']) && count($arrayquery['cust_categ'])>0) {
+				$sqlwhere[]= " (custcateg.fk_categorie IN (".implode(',',$arrayquery['cust_categ'])."))";
+			}
 				
 			//Standard Extrafield feature
 			if (empty($conf->global->MAIN_EXTRAFIELDS_DISABLED)) {
@@ -610,13 +610,14 @@ class AdvanceTargetingMailing extends CommonObject
 		$sql.= " FROM " . MAIN_DB_PREFIX . "socpeople as t";
 		$sql.= " LEFT OUTER JOIN " . MAIN_DB_PREFIX . "socpeople_extrafields as te ON te.fk_object=t.rowid ";
 	
-	
-	
 		if (count($arrayquery)>0) {
 	
 			$sqlwhere=array();
+			
+			if (array_key_exists('contact_categ', $arrayquery)) {
+				$sql.= " LEFT OUTER JOIN " . MAIN_DB_PREFIX . "categorie_contact as contactcateg ON contactcateg.fk_socpeople=t.rowid ";
+			}
 				
-
 			if (!empty($arrayquery['contact_lastname'])) {
 				$sqlwhere[]=$this->transformToSQL('t.lastname',$arrayquery['contact_lastname']);
 			}
@@ -641,6 +642,9 @@ class AdvanceTargetingMailing extends CommonObject
 			if ($arrayquery['contact_create_st_dt']!='') {
 				$sqlwhere[]= " (t.datec >= '".$this->db->idate($arrayquery['contact_create_st_dt'])."' AND t.datec <= '".$this->db->idate($arrayquery['contact_create_end_dt'])."')";
 			}
+			if (!empty($arrayquery['contact_categ']) && count($arrayquery['contact_categ'])>0) {
+				$sqlwhere[]= " (contactcateg.fk_categorie IN (".implode(",",$arrayquery['contact_categ'])."))";
+			}
 			
 	
 			//Standard Extrafield feature
@@ -654,32 +658,32 @@ class AdvanceTargetingMailing extends CommonObject
 	
 					if (($extrafields->attribute_type[$key] == 'varchar') ||
 					($extrafields->attribute_type[$key] == 'text')) {
-						if (!empty($arrayquery['options_'.$key.'_cnct'])) {
-							$sqlwhere[]= " (te.".$key." LIKE '".$arrayquery['options_'.$key.'_cnct']."')";
+						if (!empty($arrayquery['cnct_options_'.$key])) {
+							$sqlwhere[]= " (te.".$key." LIKE '".$arrayquery['cnct_options_'.$key]."')";
 						}
 					} elseif (($extrafields->attribute_type[$key] == 'int') ||
 						($extrafields->attribute_type[$key] == 'double')) {
-						if (!empty($arrayquery['options_'.$key.'_max'.'_cnct'])) {
-							$sqlwhere[]= " (te.".$key." >= ".$arrayquery['options_'.$key.'_max'.'_cnct']." AND te.".$key." <= ".$arrayquery['options_'.$key.'_min'.'_cnct'].")";
+						if (!empty($arrayquery['cnct_options_'.$key.'_max'])) {
+							$sqlwhere[]= " (te.".$key." >= ".$arrayquery['cnct_options_'.$key.'_max']." AND te.".$key." <= ".$arrayquery['cnct_options_'.$key.'_min'].")";
 						}
 					} else if (($extrafields->attribute_type[$key] == 'date') ||
 					($extrafields->attribute_type[$key] == 'datetime')) {
-						if (!empty($arrayquery['options_'.$key.'_end_dt'.'_cnct'])){
-							$sqlwhere[]= " (te.".$key." >= '".$this->db->idate($arrayquery['options_'.$key.'_st_dt'.'_cnct'])."' AND te.".$key." <= '".$this->db->idate($arrayquery['options_'.$key.'_end_dt'.'_cnct'])."')";
+						if (!empty($arrayquery['cnct_options_'.$key.'_end_dt'])){
+							$sqlwhere[]= " (te.".$key." >= '".$this->db->idate($arrayquery['cnct_options_'.$key.'_st_dt'])."' AND te.".$key." <= '".$this->db->idate($arrayquery['cnct_options_'.$key.'_end_dt'])."')";
 						}
 					}else if ($extrafields->attribute_type[$key] == 'boolean') {
-						if ($arrayquery['options_'.$key.'_cnct']!=''){
-							if ($arrayquery['options_'.$key.'_cnct']==0) {
-								$sqlwhere[]= " (te.".$key." = ".$arrayquery['options_'.$key.'_cnct']." OR ((te.".$key." IS NULL) AND (te.fk_object IS NOT NULL)))";
+						if ($arrayquery['cnct_options_'.$key]!=''){
+							if ($arrayquery['cnct_options_'.$key]==0) {
+								$sqlwhere[]= " (te.".$key." = ".$arrayquery['cnct_options_'.$key]." OR ((te.".$key." IS NULL) AND (te.fk_object IS NOT NULL)))";
 							}else {
-								$sqlwhere[]= " (te.".$key." = ".$arrayquery['options_'.$key.'_cnct'].")";
+								$sqlwhere[]= " (te.".$key." = ".$arrayquery['cnct_options_'.$key].")";
 							}
 						}
 					}else{
-						if (is_array($arrayquery['options_'.$key.'_cnct'])) {
-							$sqlwhere[]= " (te.".$key." IN ('".implode("','",$arrayquery['options_'.$key.'_cnct'])."'))";
+						if (is_array($arrayquery['cnct_options_'.$key])) {
+							$sqlwhere[]= " (te.".$key." IN ('".implode("','",$arrayquery['cnct_options_'.$key])."'))";
 						} elseif (!empty($arrayquery['cnct_options_'.$key])) {
-							$sqlwhere[]= " (te.".$key." LIKE '".$arrayquery['options_'.$key.'_cnct']."')";
+							$sqlwhere[]= " (te.".$key." LIKE '".$arrayquery['cnct_options_'.$key]."')";
 						}
 					}
 	
